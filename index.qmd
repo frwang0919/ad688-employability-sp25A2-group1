@@ -1,6 +1,26 @@
 ---
 title: "Job Market Analysis 2024"
+author: "Furong Wang, Marco Perez Garcia"
+date: "2025-02-10"
+format:
+  html:
+    theme: journal
+    toc: true
 ---
+# Topic: Salary & Compensation Trends  
+## Introduction
+The global job market is undergoing a significant transformation due to various factors, including the rapid adoption of **artificial intelligence (AI)**, evolving work models such as **remote work**, and shifts in **industry-specific** wage structures. For job seekers, understanding these dynamics is crucial for making informed decisions about career paths, salary expectations, and work environment preferences. This research aims to **analyze salary trends for AI and non-AI careers, as well as the impact of remote work, regional differences, and specific industry on salaries**.
+
+## Research Rationale
+As the economy adapts to AI technologies, many industries are experiencing shifts in job structures and salary scales. This topic is important because **job seekers need to be aware of the changing landscape to make career decisions that align with future trends and personal goals**. These years, the rise of AI and automation is creating new job roles while displacing others. Moreover, remote work, which played an important role during the pandemic, has become a permanent feature for many industries. However, questions remain about how compensation for remote roles compares to in-office positions and how it varies across regions and industries. Based on typical trends on the job market, this analysis will explore several **key findings**:
+
+- How do salaries differ across AI vs. non-AI careers?
+- What regions offer the highest-paying jobs in AI-related and traditional careers?
+- Are remote jobs better paying than in-office roles?
+- What industries saw the biggest wage growth in 2024?
+
+## Literature Review
+
 
 This is a Quarto website.
 
