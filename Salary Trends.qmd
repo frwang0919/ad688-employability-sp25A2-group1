@@ -1,6 +1,6 @@
 ---
 title: "Salary & Compensation Trends in AI vs. Non-AI Careers"
-author: "Group 1"
+author: "Furong Wang, Marco Perez Garcia"
 date: today
 format: 
   html:
@@ -10,9 +10,9 @@ format:
 ---
 
 Recent research has highlighted a growing divergence in salary trends between artificial intelligence
-(AI)-focused careers and more traditional data science roles. Zhu (2024) found that professionals 
+(AI)-focused careers and more traditional data science roles. @zhu2024unveiling found that professionals 
 specializing in AI-related fields, such as machine learning engineers and AI researchers, consistently 
-command higher salaries than their non-AI counterparts, including data analysts and general data scientists [@chen2024unraveling]. 
+command higher salaries than their non-AI counterparts, including data analysts and general data scientists. 
 This difference in compensation reflects the increasing demand for AI expertise as industries integrate automation, 
 deep learning, and predictive analytics into their operations. While AI roles require specialized skills in areas 
 such as neural networks and natural language processing, traditional data science positions often focus 
@@ -20,12 +20,12 @@ more on business intelligence, statistical analysis, and data visualization, whi
 it does not see the same salary premiums.
 
 Other studies reinforce this trend, showing how company size and industry specialization further impact 
-salary structures. Chen, Song, and Lam (2024) analyzed U.S. salary trends from 2020 to 2023, reporting that 
+salary structures. @chen2024unraveling analyzed U.S. salary trends from 2020 to 2023, reporting that 
 salaries in AI-driven roles have shown steady increases, particularly within mid-to-large tech companies 
-investing in AI innovation [@chen2024unraveling]. In contrast, non-AI data science roles, such as data analysts, have experienced 
+investing in AI innovation. In contrast, non-AI data science roles, such as data analysts, have experienced 
 slower growth, and some projections indicate potential stagnation or slight salary declines in 2024. Similarly, 
-Quan and Raheem (2023) found that professionals with expertise in AI, cloud computing, and big data technologies 
-earn higher salaries than those with more generalist skills [@quan2023human]. Their findings suggest that as AI adoption expands 
+@quan2023human found that professionals with expertise in AI, cloud computing, and big data technologies 
+earn higher salaries than those with more generalist skills. Their findings suggest that as AI adoption expands 
 across industries, the wage gap between AI and non-AI roles may continue to grow, emphasizing the importance of 
 specialized technical expertise for long-term career advancement in data science.
 

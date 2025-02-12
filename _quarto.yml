@@ -8,6 +8,9 @@ website:
       - href: index.qmd
         text: Home
       - about.qmd
+      - href: "Salary Trends.qmd"
+        text: AI vs Non-AI Salary Trends
+      
 
 format:
   html:
