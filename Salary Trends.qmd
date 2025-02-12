@@ -1,0 +1,28 @@
+---
+title: "Literature Review"
+---
+
+Recent studies have highlighted the evolving salary trends in the data science 
+field, demonstrating how compensation varies based on job title, experience level, 
+and employer characteristics. Zhu (2024) found that senior roles such as data 
+scientists and machine learning engineers continue to command the highest salaries, 
+particularly in larger organizations that prioritize data-driven decision-making. 
+However, not all data science positions have experienced salary growth at the same rate. 
+While engineering and AI-related roles have seen increases in compensation, generalist 
+roles such as data analysts have shown stagnation or slight declines. These findings 
+suggest a growing emphasis on specialized technical expertise, as companies place a 
+higher value on advanced skills in machine learning and artificial intelligence.
+
+Other research supports this trend, reinforcing the importance of company size and 
+experience level as key determinants of salary. Chen, Song, and Lam (2024) analyzed 
+U.S. salary trends from 2020 to 2023, noting that mid-to-large companies consistently 
+offer higher salaries than smaller firms, reflecting their ability to compete for top 
+talent. Their study also projected continued salary growth for engineers and scientists, 
+while data architects are expected to recover from previous declines, and analysts may 
+face a reduction in compensation in 2024. Similarly, Quan and Raheem (2023) emphasized 
+the role of specialized skill sets in shaping salary structures, demonstrating that 
+professionals with expertise in AI, cloud computing, and big data technologies tend to 
+secure higher-paying positions. These studies collectively highlight the shifting priorities 
+in data science employment, where market demand increasingly favors roles that require advanced 
+technical skills and domain specialization.
+
