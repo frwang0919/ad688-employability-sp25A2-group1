@@ -6,10 +6,13 @@ website:
   navbar:
     left:
       - href: index.qmd
-        text: Home
-      - about.qmd
-      - href: "Salary Trends.qmd"
-        text: AI vs Non-AI Salary Trends
+        text: "Home"
+      - href: Salary Trends.qmd
+        text: "Research"
+      - href: data_analysis.qmd
+        text: "Data Analysis"
+      - href: career_plan.qmd
+        text: "Career Strategy"
       
 
 format:
