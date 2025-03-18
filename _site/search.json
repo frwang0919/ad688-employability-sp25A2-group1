@@ -4,14 +4,14 @@
     "href": "index.html",
     "title": "Job Market Analysis 2024",
     "section": "",
-    "text": "The global job market is undergoing a significant transformation due to various factors, including the rapid adoption of artificial intelligence (AI), evolving work models such as remote work, and shifts in industry-specific wage structures. For job seekers, understanding these dynamics is crucial for making informed decisions about career paths, salary expectations, and work environment preferences. This research aims to analyze salary trends for AI and non-AI careers, as well as the impact of remote work, regional differences, and specific industry on salaries.\n\n\n\nAs the economy adapts to AI technologies, many industries are experiencing shifts in job structures and salary scales. This topic is important because job seekers need to be aware of the changing landscape to make career decisions that align with future trends and personal goals. These years, the rise of AI and automation is creating new job roles while displacing others. Moreover, remote work, which played an important role during the pandemic, has become a permanent feature for many industries. However, questions remain about how compensation for remote roles compares to in-office positions and how it varies across regions and industries. Based on typical trends on the job market, this analysis will explore several key findings:\n\nHow do salaries differ across AI vs. non-AI careers?\nWhat regions offer the highest-paying jobs in AI-related and traditional careers?\nAre remote jobs better paying than in-office roles?\nWhat industries saw the biggest wage growth in 2024?\n\n\n\n\nThis is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+    "text": "The global job market is undergoing a significant transformation due to various factors, including the rapid adoption of artificial intelligence (AI), evolving work models such as remote work, and shifts in industry-specific wage structures. For job seekers, understanding these dynamics is crucial for making informed decisions about career paths, salary expectations, and work environment preferences. This research aims to analyze salary trends for AI and non-AI careers, as well as the impact of remote work, regional differences, and specific industry on salaries.\n\n\n\nAs the economy adapts to AI technologies, many industries are experiencing shifts in job structures and salary scales. This topic is important because job seekers need to be aware of the changing landscape to make career decisions that align with future trends and personal goals. These years, the rise of AI and automation is creating new job roles while displacing others. Moreover, remote work, which played an important role during the pandemic, has become a permanent feature for many industries. However, questions remain about how compensation for remote roles compares to in-office positions and how it varies across regions and industries. Based on typical trends on the job market, this analysis will explore several key findings:\n\nHow do salaries differ across AI vs. non-AI careers?\nWhat regions offer the highest-paying jobs in AI-related and traditional careers?\nAre remote jobs better paying than in-office roles?\nWhat industries saw the biggest wage growth in 2024?"
   },
   {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "About this site"
+    "text": "This site aims to cover a profound investigation related to Trends in Salaries and Compensations in AI vs non AI careers"
   },
   {
     "objectID": "index.html#introduction",
@@ -33,5 +33,12 @@
     "title": "Job Market Analysis 2024",
     "section": "",
     "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+  },
+  {
+    "objectID": "Salary Trends.html",
+    "href": "Salary Trends.html",
+    "title": "Salary & Compensation Trends in AI vs. Non-AI Careers",
+    "section": "",
+    "text": "Recent research has highlighted a growing divergence in salary trends between artificial intelligence (AI)-focused careers and more traditional data science roles. Zhu ((2024)) found that professionals specializing in AI-related fields, such as machine learning engineers and AI researchers, consistently command higher salaries than their non-AI counterparts, including data analysts and general data scientists. This difference in compensation reflects the increasing demand for AI expertise as industries integrate automation, deep learning, and predictive analytics into their operations. While AI roles require specialized skills in areas such as neural networks and natural language processing, traditional data science positions often focus more on business intelligence, statistical analysis, and data visualization, which though even that is valuable it does not see the same salary premiums.\nOther studies reinforce this trend, showing how company size and industry specialization further impact salary structures. Chen, Song, and Lam ((2024)) analyzed U.S. salary trends from 2020 to 2023, reporting that salaries in AI-driven roles have shown steady increases, particularly within mid-to-large tech companies investing in AI innovation. In contrast, non-AI data science roles, such as data analysts, have experienced slower growth, and some projections indicate potential stagnation or slight salary declines in 2024. Similarly, Quan and Raheem ((2023)) found that professionals with expertise in AI, cloud computing, and big data technologies earn higher salaries than those with more generalist skills. Their findings suggest that as AI adoption expands across industries, the wage gap between AI and non-AI roles may continue to grow, emphasizing the importance of specialized technical expertise for long-term career advancement in data science."
   }
 ]

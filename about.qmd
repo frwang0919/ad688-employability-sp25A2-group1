@@ -2,4 +2,5 @@
 title: "About"
 ---
 
-About this site
+This site aims to cover a profound investigation related to Trends in Salaries and Compensations in 
+AI vs non AI careers
