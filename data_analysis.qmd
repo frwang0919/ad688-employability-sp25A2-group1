@@ -35,20 +35,18 @@ import plotly.express as px
 ## Dropping Unnecessary Columns
 
 ### To simplify our job market analysis, we need to drop columns that are either unnecessary, duplicated, or outdated. 
-Specifically, we will remove:  
-**1. Older NAICS and SOC codes (e.g., `NAICS2`, `SOC_2`).**
-The North American Industry Classification System (NAICS) and Standard Occupational Classification (SOC) systems undergo periodic updates. Retaining only `NAICS_2022_6` and `SOC_2021_4` ensures we use the most recent classification standards. Moreover, older codes are redundant and may lead to inconsistencies in trend analysis.  
-**2. Tracking data and URLs (e.g., `ID`, `DUPLICATES`).**
-These columns related to data collection timestamps, unique identifiers, or internal system references, which do not contribute to meaningful insights about the job market. Similarly, URLs are not necessary for our analysis as they do not provide any additional value or context but add unnecessary complexity to the dataset.
+Specifically, we removed:  
+**Older NAICS and SOC codes (e.g., `NAICS2`, `SOC_2`).** The North American Industry Classification System (NAICS) and Standard Occupational Classification (SOC) systems undergo periodic updates. Retaining only `NAICS_2022_6` and `SOC_2021_4` ensures we use the most recent classification standards. Moreover, older codes are redundant and may lead to inconsistencies in trend analysis.  
+**Tracking data and URLs (e.g., `ID`, `DUPLICATES`).** These columns related to data collection timestamps, unique identifiers, or internal system references, which do not contribute to meaningful insights about the job market. Similarly, URLs are not necessary for our analysis as they do not provide any additional value or context but add unnecessary complexity to the dataset.
 
 ### Why removing multiple versions of NAICS/SOC codes?
 There are some reasons for this. Firstly, keeping only the latest industry and occupation classifications ensures our analysis reflects the most recent classification standards and avoid confusion and inconsistencies in classification. Additionally, reducing unnecessary columns speeds up data processing and enhances readability. This is particularly important when working with large datasets, as it minimizes the risk of errors and improves the efficiency of our analysis. Finally, it helps to focus on the most relevant information, allowing for clearer insights and conclusions regarding job market trends.
 
 ### Impact on Analysis:
-By removing outdated and irrelevant columns, we achieve:
-- More accurate job market trends, focusing on meaningful variables.
-- Easier interpretation without clutter from redundant or technical fields.
-- Faster analysis and visualization, improving overall efficiency.
+By removing outdated and irrelevant columns, we achieve:  
+1) More accurate job market trends, focusing on meaningful variables.  
+2) Easier interpretation without clutter from redundant or technical fields.  
+3) Faster analysis and visualization, improving overall efficiency.  
 
 ```{python}
 job_postings = pd.read_csv('lightcast_job_postings.csv')
@@ -198,15 +196,39 @@ job_postings = job_postings.drop_duplicates(subset=["TITLE_NAME", "COMPANY_NAME"
 
 # **Exploratory Data Analysis (EDA)**
 
-## Job Postings by Industry
+## Top 20 companies by job postings
 
 ```{python}
 #| scrolled: false
-fig = px.bar(job_postings["NAICS_2022_6_NAME"].value_counts(), title="Job Postings by Industry")
+filtered_companies = job_postings[job_postings["COMPANY_NAME"] != "Unclassified"]
+
+top_companies = filtered_companies["COMPANY_NAME"].value_counts().head(20)
+
+fig = px.bar(
+    x=top_companies.values,
+    y=top_companies.index,
+    orientation='h',
+    title="Top 20 Companies by Job Postings (Excluding Unclassified)",
+    labels={'x': 'Number of Job Postings', 'y': 'Company Name'},
+    text=top_companies.values
+)
+
+fig.update_layout(
+    xaxis_title="Number of Job Postings",
+    yaxis_title="Company",
+    yaxis={'categoryorder': 'total ascending'}, 
+    height=600, 
+    width=900
+)
+
 fig.show()
 ```
 
-The bar chart illustrates the distribution of job postings across various industries, with a notably high concentration in the "Unclassified Industry" category. This suggests that a significant portion of job postings may lack detailed industry classification, which could impact sector-specific analysis. Among the classified industries, sectors such as Software Publishing, Real Estate Services, and Semiconductor Manufacturing appear to have the highest job postings, indicating strong demand in these fields.
+The visualization of the top 20 companies by job postings (excluding "Unclassified") highlights key trends in the job market, particularly in the increasing demand for AI-related roles. Many of the companies with the most postings—Deloitte, Accenture, PricewaterhouseCoopers (PwC), Oracle, Infosys, Meta, and CDW—are major players in technology, consulting, and digital transformation, sectors that have been heavily investing in AI, machine learning, and data-driven innovation.
+
+The dominance of these companies in job postings suggests that careers in AI and technology-related fields are in high demand. Consulting giants like Deloitte, Accenture, PwC, and KPMG are actively expanding their AI divisions, helping businesses integrate AI into their operations. For instance, Deloitte has launched several AI tools, including chatbots like "DARTbot" for audit professionals and "NavigAite" for document review, to enhance efficiency and client services @stokes2025. Additionally, companies like Meta are pioneers in AI research, focusing on areas such as generative AI, automation, and data science. Even in non-tech sectors, financial and healthcare firms such as Citigroup, Cardinal Health, and Blue Cross Blue Shield are leveraging AI for fraud detection, risk assessment, and personalized healthcare.
+
+These trends indicate that pursuing a career in AI-related fields, such as data science, machine learning engineering, and AI research, could provide greater job opportunities and higher earning potential. The strong presence of technology and consulting firms in job postings reflects how AI is becoming a fundamental part of business strategies across industries. While traditional, non-AI careers will continue to exist, the rapid push toward automation and intelligent systems suggests that AI-related skills will be increasingly valuable in both technical and non-technical roles. As industries continue adopting AI, professionals who develop expertise in this area may have a competitive advantage in the evolving job market.
 
 ## Salary Distribution by Industry
 
@@ -216,20 +238,41 @@ fig.update_layout(width=1200, height=1000)
 fig.show()
 ```
 
-The box plot provides a clearer view of salary distributions across industries, highlighting variations in median salaries and outliers. Most industries exhibit salary concentrations below \$200K, with some sectors showing significantly higher outliers above \$300K-\$500K, suggesting high-paying roles in specialized fields. The dense clustering of salaries at the lower end indicates that a majority of job postings fall within a more constrained range, while a few industries display wider salary spreads, potentially reflecting executive-level or highly specialized positions. Further filtering by industry type or salary range could enhance interpretability.
+The box plot provides a clearer view of salary distributions across industries, highlighting variations in median salaries and outliers. Most industries exhibit salary concentrations below \$200K, with some sectors showing significantly higher outliers above \$300K-\$500K, suggesting high-paying roles in specialized fields.
 
-## Remote vs. On-Site Jobs
+AI-related jobs, typically found in industries such as technology, finance, and advanced manufacturing, often contribute to these high-salary outliers. Roles in machine learning, data science, and artificial intelligence engineering command premium salaries due to their specialized skill requirements, talent scarcity, and high demand across multiple industries. The broader salary spread in AI-intensive fields may also reflect differences in job seniority, from entry-level analysts to highly compensated AI researchers and executives.
+
+Additionally, AI-driven industries tend to offer competitive compensation to attract top talent, given the rapid pace of technological advancement and the strategic importance of AI in business growth. The dense clustering of lower salaries in non-AI industries indicates a more constrained range, potentially due to standardized pay structures or lower technical barriers to entry. 
+
+## Top 5 Occupations by Average Salary
 
 ```{python}
-fig = px.pie(job_postings, names="REMOTE_TYPE_NAME", title="Remote vs. On-Site Jobs")
+avg_salary_per_occupation = job_postings.groupby("LOT_V6_OCCUPATION_NAME")["SALARY"].mean().reset_index()
+
+top_occupations = avg_salary_per_occupation.sort_values(by="SALARY", ascending=False).head(5)
+
+fig = px.bar(
+        top_occupations,
+        x="SALARY",
+        y="LOT_V6_OCCUPATION_NAME",
+        orientation='h',
+        title="Top 5 Occupations by Average Salary",
+        labels={"SALARY": "Average Salary ($)", "LOT_V6_OCCUPATION_NAME": "Occupation"},
+        text=top_occupations["SALARY"]
+    )
+
+fig.update_layout(
+        xaxis_title="Average Salary ($)",
+        yaxis_title="Occupation",
+        yaxis={"categoryorder": "total ascending"}, 
+        height=700,
+        width=900
+    )
+
 fig.show()
 ```
 
-```{python}
-filtered_job_postings = job_postings[job_postings["REMOTE_TYPE_NAME"] != "[None]"]
-fig = px.pie(filtered_job_postings, names="REMOTE_TYPE_NAME", title="Remote vs. On-Site Jobs (Excluding None)")
-fig.show()
-```
+The salary distribution in the graph clearly shows that the highest-paying occupations are directly tied to artificial intelligence, data analytics, and business intelligence. The top-paying role, "Computer Systems Engineer / Architect," averages over \$156,000, followed by "Business Intelligence Analyst" at \$125,000 and other AI-driven roles like "Data Mining Analyst" and "Market Research Analyst," all exceeding \$100,000. These occupations rely heavily on AI, machine learning, and data-driven decision-making, making it clear that mastering AI-related skills is directly linked to higher salaries. The strong earnings for these roles indicate that industries are willing to pay a premium for professionals who can build, interpret, and optimize AI-driven systems.
 
-The initial pie chart shows that 78.3% of job postings have no specified remote work type, making it difficult to analyze remote work trends accurately. After filtering out these unspecified postings, the revised pie chart provides a clearer view of the distribution of remote job opportunities. Among classified job postings, 78.4% are fully remote, while 14.4% are hybrid, and 7.29% require on-site presence. This suggests that remote work remains the dominant option among classified job postings, with hybrid and on-site roles making up a smaller but notable portion of the market.
+In contrast, traditional non-AI careers, which are not as data or automation-focused, tend to fall outside these top salary brackets. The job market is shifting towards AI dependency, where knowing how to work with artificial intelligence, big data, and automation tools is no longer just an advantage but a necessity for higher-paying opportunities. As industries integrate AI at an increasing pace, professionals who fail to develop AI-related expertise risk stagnating in lower-paying roles, while those who embrace AI technologies position themselves for significantly better financial rewards.
 
