@@ -76,9 +76,16 @@ job_postings.drop(columns = columns_to_drop, inplace = True)
 ### We used different strategies for missing values:
 
 ```{python}
-msno.heatmap(job_postings)
-plt.title("Missing Values Heatmap")
-plt.show()
+job_postings_clean = job_postings.replace(["__", "N/A", "missing"], np.nan)
+
+job_postings_clean = job_postings_clean.apply(pd.to_numeric, errors='ignore')
+
+try:
+    msno.heatmap(job_postings_clean)
+    plt.title("Missing Values Heatmap")
+    plt.show()
+except Exception as e:
+    print(f"⚠️ Warning: Heatmap skipped due to: {e}")
 ```
 
 #### Dealing with the Salary Column
