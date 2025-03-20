@@ -76,16 +76,10 @@ job_postings.drop(columns = columns_to_drop, inplace = True)
 ### We used different strategies for missing values:
 
 ```{python}
-job_postings_clean = job_postings.replace(["__", "N/A", "missing"], np.nan)
-
-job_postings_clean = job_postings_clean.apply(pd.to_numeric, errors='ignore')
-
-try:
-    msno.heatmap(job_postings_clean)
-    plt.title("Missing Values Heatmap")
-    plt.show()
-except Exception as e:
-    print(f"⚠️ Warning: Heatmap skipped due to: {e}")
+plt.figure(figsize=(8, 6))
+msno.heatmap(job_postings)
+plt.title("Missing Values Heatmap")
+plt.show()
 ```
 
 #### Dealing with the Salary Column
@@ -218,13 +212,11 @@ The bar chart illustrates the distribution of job postings across various indust
 
 ```{python}
 fig = px.box(job_postings, x="NAICS_2022_6_NAME", y="SALARY", title="Salary Distribution by Industry")
-
 fig.update_layout(width=1200, height=1000)
-
 fig.show()
 ```
 
-The box plot provides a clearer view of salary distributions across industries, highlighting variations in median salaries and outliers. Most industries exhibit salary concentrations below $200K, with some sectors showing significantly higher outliers above $300K-$500K, suggesting high-paying roles in specialized fields. The dense clustering of salaries at the lower end indicates that a majority of job postings fall within a more constrained range, while a few industries display wider salary spreads, potentially reflecting executive-level or highly specialized positions. Further filtering by industry type or salary range could enhance interpretability.
+The box plot provides a clearer view of salary distributions across industries, highlighting variations in median salaries and outliers. Most industries exhibit salary concentrations below \$200K, with some sectors showing significantly higher outliers above \$300K-\$500K, suggesting high-paying roles in specialized fields. The dense clustering of salaries at the lower end indicates that a majority of job postings fall within a more constrained range, while a few industries display wider salary spreads, potentially reflecting executive-level or highly specialized positions. Further filtering by industry type or salary range could enhance interpretability.
 
 ## Remote vs. On-Site Jobs
 
@@ -235,7 +227,6 @@ fig.show()
 
 ```{python}
 filtered_job_postings = job_postings[job_postings["REMOTE_TYPE_NAME"] != "[None]"]
-
 fig = px.pie(filtered_job_postings, names="REMOTE_TYPE_NAME", title="Remote vs. On-Site Jobs (Excluding None)")
 fig.show()
 ```
