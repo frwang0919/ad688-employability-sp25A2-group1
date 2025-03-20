@@ -22,6 +22,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -99,7 +133,7 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Research</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./data_analysis.qmd"> 
+    <a class="nav-link active" href="./data_analysis.html" aria-current="page"> 
 <span class="menu-text">Data Analysis</span></a>
   </li>  
   <li class="nav-item">
@@ -117,8 +151,36 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#data-cleaning-preprocessing" id="toc-data-cleaning-preprocessing" class="nav-link active" data-scroll-target="#data-cleaning-preprocessing"><span class="header-section-number">1</span> <strong>Data Cleaning &amp; Preprocessing</strong></a>
+  <ul class="collapse">
+  <li><a href="#dropping-unnecessary-columns" id="toc-dropping-unnecessary-columns" class="nav-link" data-scroll-target="#dropping-unnecessary-columns"><span class="header-section-number">1.1</span> Dropping Unnecessary Columns</a>
+  <ul class="collapse">
+  <li><a href="#to-simplify-our-job-market-analysis-we-need-to-drop-columns-that-are-either-unnecessary-duplicated-or-outdated." id="toc-to-simplify-our-job-market-analysis-we-need-to-drop-columns-that-are-either-unnecessary-duplicated-or-outdated." class="nav-link" data-scroll-target="#to-simplify-our-job-market-analysis-we-need-to-drop-columns-that-are-either-unnecessary-duplicated-or-outdated."><span class="header-section-number">1.1.1</span> To simplify our job market analysis, we need to drop columns that are either unnecessary, duplicated, or outdated.</a></li>
+  <li><a href="#why-removing-multiple-versions-of-naicssoc-codes" id="toc-why-removing-multiple-versions-of-naicssoc-codes" class="nav-link" data-scroll-target="#why-removing-multiple-versions-of-naicssoc-codes"><span class="header-section-number">1.1.2</span> Why removing multiple versions of NAICS/SOC codes?</a></li>
+  <li><a href="#impact-on-analysis" id="toc-impact-on-analysis" class="nav-link" data-scroll-target="#impact-on-analysis"><span class="header-section-number">1.1.3</span> Impact on Analysis:</a></li>
+  </ul></li>
+  <li><a href="#handling-missing-values" id="toc-handling-missing-values" class="nav-link" data-scroll-target="#handling-missing-values"><span class="header-section-number">1.2</span> Handling Missing Values</a>
+  <ul class="collapse">
+  <li><a href="#we-used-different-strategies-for-missing-values" id="toc-we-used-different-strategies-for-missing-values" class="nav-link" data-scroll-target="#we-used-different-strategies-for-missing-values"><span class="header-section-number">1.2.1</span> We used different strategies for missing values:</a></li>
+  </ul></li>
+  <li><a href="#removing-duplicate-job-postings" id="toc-removing-duplicate-job-postings" class="nav-link" data-scroll-target="#removing-duplicate-job-postings"><span class="header-section-number">1.3</span> Removing Duplicate Job Postings</a>
+  <ul class="collapse">
+  <li><a href="#to-ensure-each-job-is-counted-only-once-we-removed-duplicates-based-on-job-title-company-location-and-posting-date." id="toc-to-ensure-each-job-is-counted-only-once-we-removed-duplicates-based-on-job-title-company-location-and-posting-date." class="nav-link" data-scroll-target="#to-ensure-each-job-is-counted-only-once-we-removed-duplicates-based-on-job-title-company-location-and-posting-date."><span class="header-section-number">1.3.1</span> To ensure each job is counted only once, we removed duplicates based on job title, company, location, and posting date.</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#exploratory-data-analysis-eda" id="toc-exploratory-data-analysis-eda" class="nav-link" data-scroll-target="#exploratory-data-analysis-eda"><span class="header-section-number">2</span> <strong>Exploratory Data Analysis (EDA)</strong></a>
+  <ul class="collapse">
+  <li><a href="#job-postings-by-industry" id="toc-job-postings-by-industry" class="nav-link" data-scroll-target="#job-postings-by-industry"><span class="header-section-number">2.1</span> Job Postings by Industry</a></li>
+  <li><a href="#salary-distribution-by-industry" id="toc-salary-distribution-by-industry" class="nav-link" data-scroll-target="#salary-distribution-by-industry"><span class="header-section-number">2.2</span> Salary Distribution by Industry</a></li>
+  <li><a href="#remote-vs.-on-site-jobs" id="toc-remote-vs.-on-site-jobs" class="nav-link" data-scroll-target="#remote-vs.-on-site-jobs"><span class="header-section-number">2.3</span> Remote vs.&nbsp;On-Site Jobs</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -164,8 +226,190 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="data-cleaning-preprocessing" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> <strong>Data Cleaning &amp; Preprocessing</strong></h1>
+<div id="6103f29c" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> missingno <span class="im">as</span> msno</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="dropping-unnecessary-columns" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="dropping-unnecessary-columns"><span class="header-section-number">1.1</span> Dropping Unnecessary Columns</h2>
+<section id="to-simplify-our-job-market-analysis-we-need-to-drop-columns-that-are-either-unnecessary-duplicated-or-outdated." class="level3" data-number="1.1.1">
+<h3 data-number="1.1.1" class="anchored" data-anchor-id="to-simplify-our-job-market-analysis-we-need-to-drop-columns-that-are-either-unnecessary-duplicated-or-outdated."><span class="header-section-number">1.1.1</span> To simplify our job market analysis, we need to drop columns that are either unnecessary, duplicated, or outdated.</h3>
+<p>Specifically, we will remove:<br>
+<strong>1. Older NAICS and SOC codes (e.g., <code>NAICS2</code>, <code>SOC_2</code>).</strong> The North American Industry Classification System (NAICS) and Standard Occupational Classification (SOC) systems undergo periodic updates. Retaining only <code>NAICS_2022_6</code> and <code>SOC_2021_4</code> ensures we use the most recent classification standards. Moreover, older codes are redundant and may lead to inconsistencies in trend analysis.<br>
+<strong>2. Tracking data and URLs (e.g., <code>ID</code>, <code>DUPLICATES</code>).</strong> These columns related to data collection timestamps, unique identifiers, or internal system references, which do not contribute to meaningful insights about the job market. Similarly, URLs are not necessary for our analysis as they do not provide any additional value or context but add unnecessary complexity to the dataset.</p>
+</section>
+<section id="why-removing-multiple-versions-of-naicssoc-codes" class="level3" data-number="1.1.2">
+<h3 data-number="1.1.2" class="anchored" data-anchor-id="why-removing-multiple-versions-of-naicssoc-codes"><span class="header-section-number">1.1.2</span> Why removing multiple versions of NAICS/SOC codes?</h3>
+<p>There are some reasons for this. Firstly, keeping only the latest industry and occupation classifications ensures our analysis reflects the most recent classification standards and avoid confusion and inconsistencies in classification. Additionally, reducing unnecessary columns speeds up data processing and enhances readability. This is particularly important when working with large datasets, as it minimizes the risk of errors and improves the efficiency of our analysis. Finally, it helps to focus on the most relevant information, allowing for clearer insights and conclusions regarding job market trends.</p>
+</section>
+<section id="impact-on-analysis" class="level3" data-number="1.1.3">
+<h3 data-number="1.1.3" class="anchored" data-anchor-id="impact-on-analysis"><span class="header-section-number">1.1.3</span> Impact on Analysis:</h3>
+<p>By removing outdated and irrelevant columns, we achieve: - More accurate job market trends, focusing on meaningful variables. - Easier interpretation without clutter from redundant or technical fields. - Faster analysis and visualization, improving overall efficiency.</p>
+<div id="e349f553" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>job_postings <span class="op">=</span> pd.read_csv(<span class="st">'lightcast_job_postings.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="ae43ac3c" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>columns_to_drop <span class="op">=</span> [</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ID"</span>, <span class="st">"URL"</span>, <span class="st">"ACTIVE_URLS"</span>, <span class="st">"DUPLICATES"</span>, <span class="st">"LAST_UPDATED_TIMESTAMP"</span>, <span class="st">"ACTIVE_URLS"</span>, <span class="st">"TITLE"</span>, <span class="st">"COMPANY"</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MSA"</span>, <span class="st">"STATE"</span>, <span class="st">"COUNTY"</span>, <span class="st">"CITY"</span>, <span class="st">"COUNTY_OUTGOING"</span>, <span class="st">"COUNTY_INCOMING"</span>, <span class="st">"MSA_OUTGOING"</span>, <span class="st">"MSA_INCOMING"</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ONET"</span>, <span class="st">"ONET_2019"</span>, <span class="st">"CIP2"</span>, <span class="st">"CIP4"</span>, <span class="st">"CIP6"</span>, <span class="st">"MODELED_DURATION"</span>, <span class="st">"MODELED_EXPIRED"</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CERTIFICATIONS"</span>, <span class="st">"COMMON_SKILLS"</span>, <span class="st">"SPECIALIZED_SKILLS"</span>, <span class="st">"SKILLS"</span>, <span class="st">"SOFTWARE_SKILLS"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LOT_V6_CAREER_AREA"</span>, <span class="st">"LOT_V6_OCCUPATION_GROUP"</span>, <span class="st">"LOT_V6_OCCUPATION"</span>, <span class="st">"LOT_V6_SPECIALIZED_OCCUPATION"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LOT_OCCUPATION_GROUP"</span>, <span class="st">"LOT_SPECIALIZED_OCCUPATION"</span>, <span class="st">"LOT_OCCUPATION"</span>, <span class="st">"LOT_CAREER_AREA"</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"NAICS2"</span>, <span class="st">"NAICS2_NAME"</span>, <span class="st">"NAICS3"</span>, <span class="st">"NAICS3_NAME"</span>, <span class="st">"NAICS4"</span>, <span class="st">"NAICS4_NAME"</span>, <span class="st">"NAICS5"</span>, <span class="st">"NAICS5_NAME"</span>, <span class="st">"NAICS6"</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"NAICS_2022_2"</span>, <span class="st">"NAICS_2022_2_NAME"</span>, <span class="st">"NAICS_2022_3"</span>, <span class="st">"NAICS_2022_3_NAME"</span>, <span class="st">"NAICS_2022_4"</span>, <span class="st">"NAICS_2022_4_NAME"</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"NAICS_2022_5"</span>, <span class="st">"NAICS_2022_5_NAME"</span>, <span class="st">"NAICS_2022_6"</span>,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SOC_2"</span>, <span class="st">"SOC_2_NAME"</span>, <span class="st">"SOC_3"</span>, <span class="st">"SOC_3_NAME"</span>, <span class="st">"SOC_5"</span>, <span class="st">"SOC_5_NAME"</span>, <span class="st">"SOC_4"</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SOC_2021_2"</span>, <span class="st">"SOC_2021_2_NAME"</span>, <span class="st">"SOC_2021_3"</span>, <span class="st">"SOC_2021_3_NAME"</span>, <span class="st">"SOC_2021_5"</span>, <span class="st">"SOC_2021_5_NAME"</span>, <span class="st">"SOC_2021_4"</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>job_postings.drop(columns <span class="op">=</span> columns_to_drop, inplace <span class="op">=</span> <span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="handling-missing-values" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="handling-missing-values"><span class="header-section-number">1.2</span> Handling Missing Values</h2>
+<section id="we-used-different-strategies-for-missing-values" class="level3" data-number="1.2.1">
+<h3 data-number="1.2.1" class="anchored" data-anchor-id="we-used-different-strategies-for-missing-values"><span class="header-section-number">1.2.1</span> We used different strategies for missing values:</h3>
+<div id="f4ca5b24" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>msno.heatmap(job_postings)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Missing Values Heatmap"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="data_analysis_files/figure-html/cell-5-output-1.png" width="1690" height="1164" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="dealing-with-the-salary-column" class="level4" data-number="1.2.1.1">
+<h4 data-number="1.2.1.1" class="anchored" data-anchor-id="dealing-with-the-salary-column"><span class="header-section-number">1.2.1.1</span> Dealing with the Salary Column</h4>
+<p>The <code>SALARY</code> column has a significant number of missing values. To handle this, we replaced the missing values with the median salary for that specific title or industry. This approach is effective because it minimizes the impact of outliers and provides a more accurate representation of the typical salary for each job title.</p>
+<div id="8d899958" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>title_median_salary <span class="op">=</span> job_postings.groupby(<span class="st">'TITLE_NAME'</span>)[<span class="st">'SALARY'</span>].median()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>industry_median_salary <span class="op">=</span> job_postings.groupby(<span class="st">'NAICS_2022_6_NAME'</span>)[<span class="st">'SALARY'</span>].median()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="2bcde0ad" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>job_postings[<span class="st">'SALARY'</span>] <span class="op">=</span> job_postings.<span class="bu">apply</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> row: title_median_salary[row[<span class="st">'TITLE_NAME'</span>]]</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> pd.isna(row[<span class="st">'SALARY'</span>]) <span class="kw">and</span> row[<span class="st">'TITLE_NAME'</span>] <span class="kw">in</span> title_median_salary <span class="cf">else</span> row[<span class="st">'SALARY'</span>], </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    axis<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="0c6d7384" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>job_postings[<span class="st">'SALARY'</span>] <span class="op">=</span> job_postings.<span class="bu">apply</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> row: industry_median_salary[row[<span class="st">'NAICS_2022_6_NAME'</span>]]</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> pd.isna(row[<span class="st">'SALARY'</span>]) <span class="kw">and</span> row[<span class="st">'NAICS_2022_6_NAME'</span>] <span class="kw">in</span> industry_median_salary <span class="cf">else</span> row[<span class="st">'SALARY'</span>], </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    axis<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="c7d9fe86" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>job_postings[<span class="st">'SALARY'</span>].fillna(job_postings[<span class="st">"SALARY"</span>].median(), inplace <span class="op">=</span> <span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="dealing-with-columns-with-50-missing-values" class="level4" data-number="1.2.1.2">
+<h4 data-number="1.2.1.2" class="anchored" data-anchor-id="dealing-with-columns-with-50-missing-values"><span class="header-section-number">1.2.1.2</span> Dealing with Columns with &gt;50% missing values</h4>
+<p>Dealing with columns that have more than 50% missing values is crucial for maintaining the integrity of our dataset. Columns with excessive missing data can introduce bias and reduce the reliability of our analysis. Therefore, we removed any columns that exceed this threshold. This ensures that our dataset remains focused on relevant and reliable information, enhancing the quality of our insights.</p>
+<div id="d9a08a29" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>job_postings.dropna(thresh <span class="op">=</span> <span class="bu">len</span>(job_postings) <span class="op">*</span> <span class="fl">0.5</span>, axis <span class="op">=</span> <span class="dv">1</span>, inplace <span class="op">=</span> <span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="dealing-with-categorical-fields" class="level4" data-number="1.2.1.3">
+<h4 data-number="1.2.1.3" class="anchored" data-anchor-id="dealing-with-categorical-fields"><span class="header-section-number">1.2.1.3</span> Dealing with Categorical fields</h4>
+<p>Categorical fields, such as <code>TITLE_RAW</code>, were filled with “Unknown” for missing values. This approach allows us to retain the integrity of the dataset without introducing bias from arbitrary values. By labeling missing categorical data as “Unknown”, we can still analyze trends without losing valuable information.</p>
+<div id="0e5014c4" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>job_postings[<span class="st">'TITLE_RAW'</span>].fillna(<span class="st">"Unknown"</span>, inplace <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>job_postings[<span class="st">'TITLE_CLEAN'</span>].fillna(<span class="st">"Unknown"</span>, inplace <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>job_postings[<span class="st">'COMPANY_RAW'</span>].fillna(<span class="st">"Unknown"</span>, inplace <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>job_postings[<span class="st">'MSA_NAME'</span>].fillna(<span class="st">"Unknown"</span>, inplace <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>job_postings[<span class="st">'MSA_NAME_OUTGOING'</span>].fillna(<span class="st">"Unknown"</span>, inplace <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>job_postings[<span class="st">'MSA_NAME_INCOMING'</span>].fillna(<span class="st">"Unknown"</span>, inplace <span class="op">=</span> <span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="dealing-with-datetime-fields" class="level4" data-number="1.2.1.4">
+<h4 data-number="1.2.1.4" class="anchored" data-anchor-id="dealing-with-datetime-fields"><span class="header-section-number">1.2.1.4</span> Dealing with Datetime fields</h4>
+<p>For the <code>EXPIRED</code> variable, we chose to fill the missing values with the maximum date from this column. We assumed that the missing value here is because the post has not expired yet. By using the maximum date, we can effectively handle missing values without introducing bias or skewing the results.</p>
+<div id="8b1402c0" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>job_postings[<span class="st">'POSTED'</span>] <span class="op">=</span> pd.to_datetime(job_postings[<span class="st">'POSTED'</span>])</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>job_postings[<span class="st">'EXPIRED'</span>] <span class="op">=</span> pd.to_datetime(job_postings[<span class="st">'EXPIRED'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="2a0635bd" class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>max_expired_date <span class="op">=</span> job_postings[<span class="st">'EXPIRED'</span>].<span class="bu">max</span>()</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>job_postings[<span class="st">'EXPIRED'</span>] <span class="op">=</span> job_postings[<span class="st">'EXPIRED'</span>].fillna(max_expired_date)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="dealing-with-numerical-fields" class="level4" data-number="1.2.1.5">
+<h4 data-number="1.2.1.5" class="anchored" data-anchor-id="dealing-with-numerical-fields"><span class="header-section-number">1.2.1.5</span> Dealing with Numerical fields</h4>
+<p>For the <code>MIN_YEARS_EXPERIENCE</code> variable, we chose to fill the missing values with the median <code>MIN_YEARS_EXPERIENCE</code> for a specific title or industry, similar to how we did with the <code>SALARY</code> variable. This can minimize the impact of outliers and provides a more accurate representation of the typical years of experience required for each job title.</p>
+<div id="8566e377" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>title_median_exp <span class="op">=</span> job_postings.groupby(<span class="st">'TITLE_NAME'</span>)[<span class="st">'MIN_YEARS_EXPERIENCE'</span>].median()</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>industry_median_exp <span class="op">=</span> job_postings.groupby(<span class="st">'NAICS_2022_6_NAME'</span>)[<span class="st">'MIN_YEARS_EXPERIENCE'</span>].median()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="1c8fbeb8" class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>job_postings[<span class="st">'MIN_YEARS_EXPERIENCE'</span>] <span class="op">=</span> job_postings.<span class="bu">apply</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> row: title_median_exp[row[<span class="st">'TITLE_NAME'</span>]]</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> pd.isna(row[<span class="st">'MIN_YEARS_EXPERIENCE'</span>]) <span class="kw">and</span> row[<span class="st">'TITLE_NAME'</span>] <span class="kw">in</span> title_median_exp <span class="cf">else</span> row[<span class="st">'MIN_YEARS_EXPERIENCE'</span>], </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    axis<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="c87b38fd" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>job_postings[<span class="st">'MIN_YEARS_EXPERIENCE'</span>] <span class="op">=</span> job_postings.<span class="bu">apply</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> row: industry_median_exp[row[<span class="st">'NAICS_2022_6_NAME'</span>]]</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> pd.isna(row[<span class="st">'MIN_YEARS_EXPERIENCE'</span>]) <span class="kw">and</span> row[<span class="st">'NAICS_2022_6_NAME'</span>] <span class="kw">in</span> industry_median_exp <span class="cf">else</span> row[<span class="st">'MIN_YEARS_EXPERIENCE'</span>], </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    axis<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="143452ed" class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>job_postings[<span class="st">'MIN_YEARS_EXPERIENCE'</span>].fillna(job_postings[<span class="st">"MIN_YEARS_EXPERIENCE"</span>].median(), inplace <span class="op">=</span> <span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>DURATION</code> variable is also a numerical field, but it has a different approach. We will fill the missing values with the difference between the <code>POSTED</code> and <code>EXPIRED</code>, which calculates the actual time span based on the available dates.</p>
+<div id="bdb6c4f1" class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> impute_duration(cols):</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    posted <span class="op">=</span> cols[<span class="dv">0</span>]</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    expired <span class="op">=</span> cols[<span class="dv">1</span>]</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    duration <span class="op">=</span> cols[<span class="dv">2</span>]</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> pd.isnull(duration):</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> expired <span class="op">-</span> posted</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>: </span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> duration</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="bbd70344" class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>job_postings[<span class="st">'DURATION'</span>] <span class="op">=</span> job_postings[[<span class="st">'POSTED'</span>, <span class="st">'EXPIRED'</span>, <span class="st">'DURATION'</span>]].<span class="bu">apply</span>(impute_duration, axis <span class="op">=</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="removing-duplicate-job-postings" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="removing-duplicate-job-postings"><span class="header-section-number">1.3</span> Removing Duplicate Job Postings</h2>
+<section id="to-ensure-each-job-is-counted-only-once-we-removed-duplicates-based-on-job-title-company-location-and-posting-date." class="level3" data-number="1.3.1">
+<h3 data-number="1.3.1" class="anchored" data-anchor-id="to-ensure-each-job-is-counted-only-once-we-removed-duplicates-based-on-job-title-company-location-and-posting-date."><span class="header-section-number">1.3.1</span> To ensure each job is counted only once, we removed duplicates based on job title, company, location, and posting date.</h3>
+<div id="ebb335d3" class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>job_postings <span class="op">=</span> job_postings.drop_duplicates(subset<span class="op">=</span>[<span class="st">"TITLE_NAME"</span>, <span class="st">"COMPANY_NAME"</span>, <span class="st">"LOCATION"</span>, <span class="st">"POSTED"</span>], keep <span class="op">=</span> <span class="st">"first"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="exploratory-data-analysis-eda" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> <strong>Exploratory Data Analysis (EDA)</strong></h1>
+<section id="job-postings-by-industry" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="job-postings-by-industry"><span class="header-section-number">2.1</span> Job Postings by Industry</h2>
+</section>
+<section id="salary-distribution-by-industry" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="salary-distribution-by-industry"><span class="header-section-number">2.2</span> Salary Distribution by Industry</h2>
+</section>
+<section id="remote-vs.-on-site-jobs" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="remote-vs.-on-site-jobs"><span class="header-section-number">2.3</span> Remote vs.&nbsp;On-Site Jobs</h2>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
