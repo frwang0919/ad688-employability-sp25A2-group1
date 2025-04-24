@@ -1,0 +1,423 @@
+---
+title: Data Analysis
+subtitle: Comprehensive Data Cleaning & Exploratory Analysis of Job Market Trends
+author:
+  - name: Furong Wang
+    affiliations:
+      - id: bu
+        name: Boston University
+        city: Boston
+        state: MA
+  - name: Marco Perez Garcia
+    affiliations:
+      - ref: bu
+bibliography: references.bib
+csl: csl/econometrica.csl
+format:
+  html:
+    toc: true
+    number-sections: true
+    df-print: paged
+jupyter: python3
+---
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import missingno as msno
+import plotly.express as px
+```
+
+# **Data Cleaning**
+
+```{python}
+job_postings = pd.read_csv('lightcast_job_postings.csv')
+```
+
+```{python}
+columns_to_drop = [
+    "ID", "URL", "ACTIVE_URLS", "DUPLICATES", "LAST_UPDATED_TIMESTAMP", "ACTIVE_URLS", "TITLE", "COMPANY",
+    "MSA", "STATE", "COUNTY", "CITY", "COUNTY_OUTGOING", "COUNTY_INCOMING", "MSA_OUTGOING", "MSA_INCOMING",
+    "ONET", "ONET_2019", "CIP2", "CIP4", "CIP6", "MODELED_DURATION", "MODELED_EXPIRED",
+    "CERTIFICATIONS", "COMMON_SKILLS", "SPECIALIZED_SKILLS", "SKILLS", "SOFTWARE_SKILLS",
+    "LOT_V6_CAREER_AREA", "LOT_V6_OCCUPATION_GROUP", "LOT_V6_OCCUPATION", "LOT_V6_SPECIALIZED_OCCUPATION",
+    "LOT_OCCUPATION_GROUP", "LOT_SPECIALIZED_OCCUPATION", "LOT_OCCUPATION", "LOT_CAREER_AREA",
+    "NAICS2", "NAICS2_NAME", "NAICS3", "NAICS3_NAME", "NAICS4", "NAICS4_NAME", "NAICS5", "NAICS5_NAME", "NAICS6",
+    "NAICS_2022_2", "NAICS_2022_2_NAME", "NAICS_2022_3", "NAICS_2022_3_NAME", "NAICS_2022_4", "NAICS_2022_4_NAME",
+    "NAICS_2022_5", "NAICS_2022_5_NAME", "NAICS_2022_6",
+    "SOC_2", "SOC_2_NAME", "SOC_3", "SOC_3_NAME", "SOC_5", "SOC_5_NAME", "SOC_4",
+    "SOC_2021_2", "SOC_2021_2_NAME", "SOC_2021_3", "SOC_2021_3_NAME", "SOC_2021_5", "SOC_2021_5_NAME", "SOC_2021_4"
+]
+
+job_postings.drop(columns = columns_to_drop, inplace = True)
+```
+
+```{python}
+title_median_salary = job_postings.groupby('TITLE_NAME')['SALARY'].median()
+industry_median_salary = job_postings.groupby('NAICS_2022_6_NAME')['SALARY'].median()
+```
+
+```{python}
+job_postings['SALARY'] = job_postings.apply(
+    lambda row: title_median_salary[row['TITLE_NAME']]
+    if pd.isna(row['SALARY']) and row['TITLE_NAME'] in title_median_salary else row['SALARY'], 
+    axis=1
+)
+```
+
+```{python}
+job_postings['SALARY'] = job_postings.apply(
+    lambda row: industry_median_salary[row['NAICS_2022_6_NAME']]
+    if pd.isna(row['SALARY']) and row['NAICS_2022_6_NAME'] in industry_median_salary else row['SALARY'], 
+    axis=1
+)
+```
+
+```{python}
+job_postings['SALARY'].fillna(job_postings["SALARY"].median(), inplace = True)
+```
+
+```{python}
+job_postings.dropna(thresh = len(job_postings) * 0.5, axis = 1, inplace = True)
+```
+
+```{python}
+job_postings['TITLE_RAW'].fillna("Unknown", inplace = True)
+job_postings['TITLE_CLEAN'].fillna("Unknown", inplace = True)
+job_postings['COMPANY_RAW'].fillna("Unknown", inplace = True)
+job_postings['MSA_NAME'].fillna("Unknown", inplace = True)
+job_postings['MSA_NAME_OUTGOING'].fillna("Unknown", inplace = True)
+job_postings['MSA_NAME_INCOMING'].fillna("Unknown", inplace = True)
+```
+
+```{python}
+job_postings['POSTED'] = pd.to_datetime(job_postings['POSTED'])
+job_postings['EXPIRED'] = pd.to_datetime(job_postings['EXPIRED'])
+```
+
+```{python}
+max_expired_date = job_postings['EXPIRED'].max()
+job_postings['EXPIRED'] = job_postings['EXPIRED'].fillna(max_expired_date)
+```
+
+```{python}
+title_median_exp = job_postings.groupby('TITLE_NAME')['MIN_YEARS_EXPERIENCE'].median()
+industry_median_exp = job_postings.groupby('NAICS_2022_6_NAME')['MIN_YEARS_EXPERIENCE'].median()
+```
+
+```{python}
+job_postings['MIN_YEARS_EXPERIENCE'] = job_postings.apply(
+    lambda row: title_median_exp[row['TITLE_NAME']]
+    if pd.isna(row['MIN_YEARS_EXPERIENCE']) and row['TITLE_NAME'] in title_median_exp else row['MIN_YEARS_EXPERIENCE'], 
+    axis=1
+)
+```
+
+```{python}
+job_postings['MIN_YEARS_EXPERIENCE'] = job_postings.apply(
+    lambda row: industry_median_exp[row['NAICS_2022_6_NAME']]
+    if pd.isna(row['MIN_YEARS_EXPERIENCE']) and row['NAICS_2022_6_NAME'] in industry_median_exp else row['MIN_YEARS_EXPERIENCE'], 
+    axis=1
+)
+```
+
+```{python}
+job_postings['MIN_YEARS_EXPERIENCE'].fillna(job_postings["MIN_YEARS_EXPERIENCE"].median(), inplace = True)
+```
+
+```{python}
+def impute_duration(cols):
+    posted = cols[0]
+    expired = cols[1]
+    duration = cols[2]
+
+    if pd.isnull(duration):
+        return expired - posted
+    else: 
+        return duration
+```
+
+```{python}
+job_postings['DURATION'] = job_postings[['POSTED', 'EXPIRED', 'DURATION']].apply(impute_duration, axis = 1)
+```
+
+```{python}
+job_postings = job_postings.drop_duplicates(subset=["TITLE_NAME", "COMPANY_NAME", "LOCATION", "POSTED"], keep = "first")
+```
+
+# **Exploratory Data Analysis & Visualization**
+
+```{python}
+plotly_layout = dict(
+    font=dict(family="Arial", size=14),
+    title_font=dict(size=20, family="Arial", color="black"),
+    paper_bgcolor="white",
+    plot_bgcolor="white",
+    margin=dict(t=60, l=60, r=30, b=60),
+    legend=dict(bordercolor="lightgray", borderwidth=1),
+    xaxis=dict(title_font=dict(size=16), tickfont=dict(size=12), showgrid=True, gridcolor="lightgray"),
+    yaxis=dict(title_font=dict(size=16), tickfont=dict(size=12), showgrid=True, gridcolor="lightgray"),
+)
+```
+
+## Top 20 companies by job postings
+
+```{python}
+#| scrolled: false
+filtered_companies = job_postings[job_postings["COMPANY_NAME"] != "Unclassified"]
+
+top_companies = filtered_companies["COMPANY_NAME"].value_counts().head(20)
+
+fig = px.bar(
+    x=top_companies.values,
+    y=top_companies.index,
+    orientation='h',
+    title="Top 20 Companies by Job Postings (Excluding Unclassified)",
+    labels={'x': 'Number of Job Postings', 'y': 'Company Name'},
+    text=top_companies.values
+)
+
+fig.update_layout(
+    xaxis_title="Number of Job Postings",
+    yaxis_title="Company",
+    yaxis={'categoryorder': 'total ascending'}, 
+    height=600, 
+    width=900
+)
+
+fig.update_layout(**plotly_layout) 
+fig.show()
+```
+
+The visualization of the top 20 companies by job postings (excluding "Unclassified") highlights key trends in the job market, particularly in the increasing demand for AI-related roles. Many of the companies with the most postings—Deloitte, Accenture, PricewaterhouseCoopers (PwC), Oracle, Infosys, Meta, and CDW—are major players in technology, consulting, and digital transformation, sectors that have been heavily investing in AI, machine learning, and data-driven innovation.
+
+The dominance of these companies in job postings suggests that careers in AI and technology-related fields are in high demand. Consulting giants like Deloitte, Accenture, PwC, and KPMG are actively expanding their AI divisions, helping businesses integrate AI into their operations. For instance, Deloitte has launched several AI tools, including chatbots like "DARTbot" for audit professionals and "NavigAite" for document review, to enhance efficiency and client services (Stokes, 2025). Additionally, companies like Meta are pioneers in AI research, focusing on areas such as generative AI, automation, and data science. Even in non-tech sectors, financial and healthcare firms such as Citigroup, Cardinal Health, and Blue Cross Blue Shield are leveraging AI for fraud detection, risk assessment, and personalized healthcare.
+
+These trends indicate that pursuing a career in AI-related fields, such as data science, machine learning engineering, and AI research, could provide greater job opportunities and higher earning potential. The strong presence of technology and consulting firms in job postings reflects how AI is becoming a fundamental part of business strategies across industries. While traditional, non-AI careers will continue to exist, the rapid push toward automation and intelligent systems suggests that AI-related skills will be increasingly valuable in both technical and non-technical roles. As industries continue adopting AI, professionals who develop expertise in this area may have a competitive advantage in the evolving job market.
+
+## Salary Distribution by Industry
+
+```{python}
+fig = px.box(job_postings, x="NAICS_2022_6_NAME", y="SALARY", title="Salary Distribution by Industry")
+fig.update_layout(width=1200, height=1000)
+fig.update_layout(**plotly_layout)
+fig.show()
+```
+
+The box plot provides a clearer view of salary distributions across industries, highlighting variations in median salaries and outliers. Most industries exhibit salary concentrations below \$200K, with some sectors showing significantly higher outliers above \$300K-\$500K, suggesting high-paying roles in specialized fields.
+
+AI-related jobs, typically found in industries such as technology, finance, and advanced manufacturing, often contribute to these high-salary outliers. Roles in machine learning, data science, and artificial intelligence engineering command premium salaries due to their specialized skill requirements, talent scarcity, and high demand across multiple industries. The broader salary spread in AI-intensive fields may also reflect differences in job seniority, from entry-level analysts to highly compensated AI researchers and executives.
+
+Additionally, AI-driven industries tend to offer competitive compensation to attract top talent, given the rapid pace of technological advancement and the strategic importance of AI in business growth. The dense clustering of lower salaries in non-AI industries indicates a more constrained range, potentially due to standardized pay structures or lower technical barriers to entry. 
+
+## Top 5 Occupations by Average Salary
+
+```{python}
+avg_salary_per_occupation = job_postings.groupby("LOT_V6_OCCUPATION_NAME")["SALARY"].mean().reset_index()
+
+top_occupations = avg_salary_per_occupation.sort_values(by="SALARY", ascending=False).head(5)
+
+fig = px.bar(
+        top_occupations,
+        x="SALARY",
+        y="LOT_V6_OCCUPATION_NAME",
+        orientation='h',
+        title="Top 5 Occupations by Average Salary",
+        labels={"SALARY": "Average Salary ($)", "LOT_V6_OCCUPATION_NAME": "Occupation"},
+        text=top_occupations["SALARY"]
+    )
+
+fig.update_layout(
+        xaxis_title="Average Salary ($)",
+        yaxis_title="Occupation",
+        yaxis={"categoryorder": "total ascending"}, 
+        height=700,
+        width=900
+    )
+
+fig.update_layout(**plotly_layout)
+fig.show()
+```
+
+The salary distribution in the graph clearly shows that the highest-paying occupations are directly tied to artificial intelligence, data analytics, and business intelligence. The top-paying role, "Computer Systems Engineer / Architect," averages over \$156,000, followed by "Business Intelligence Analyst" at \$125,000 and other AI-driven roles like "Data Mining Analyst" and "Market Research Analyst," all exceeding \$100,000. These occupations rely heavily on AI, machine learning, and data-driven decision-making, making it clear that mastering AI-related skills is directly linked to higher salaries. The strong earnings for these roles indicate that industries are willing to pay a premium for professionals who can build, interpret, and optimize AI-driven systems.
+
+In contrast, traditional non-AI careers, which are not as data or automation-focused, tend to fall outside these top salary brackets. The job market is shifting towards AI dependency, where knowing how to work with artificial intelligence, big data, and automation tools is no longer just an advantage but a necessity for higher-paying opportunities. As industries integrate AI at an increasing pace, professionals who fail to develop AI-related expertise risk stagnating in lower-paying roles, while those who embrace AI technologies position themselves for significantly better financial rewards.
+
+## **Enhanced Visualizations**
+
+## Job Postings Trend Over Time (Top Companies)
+
+```{python}
+job_postings['POSTED'] = pd.to_datetime(job_postings['POSTED'])
+top_companies = (
+    job_postings[job_postings["COMPANY_NAME"] != "Unclassified"]["COMPANY_NAME"]
+    .value_counts()
+    .head(10)
+    .index
+)
+
+filtered = job_postings[job_postings['COMPANY_NAME'].isin(top_companies)]
+
+trend = (
+    filtered.groupby([filtered['POSTED'].dt.to_period('M'), 'COMPANY_NAME'])
+    .size()
+    .reset_index(name='Postings')
+)
+trend['POSTED'] = trend['POSTED'].dt.to_timestamp()
+
+fig = px.line(trend, x='POSTED', y='Postings', color='COMPANY_NAME',
+              title='Monthly Job Postings for Top 10 Companies')
+fig.update_layout(**plotly_layout)
+fig.show()
+```
+
+The line chart above reveals dynamic shifts in job posting activity among the top 10 hiring companies over recent months. Several key patterns emerge:
+
+- Infosys shows a strong upward trend, indicating a possible expansion phase or increased demand for tech-related talent. This could reflect growing project loads or client demand in IT services and consulting.
+
+- Accenture and Deloitte maintain relatively stable posting volumes, suggesting consistent hiring pipelines. This stability aligns with their roles as global consulting giants with ongoing needs for specialized talent in digital transformation, data analytics, and strategy.
+
+- Humana and Insight Global exhibit moderate declines followed by slight recoveries, potentially pointing to seasonal or project-based hiring fluctuations in healthcare and staffing services.
+
+- Companies like KPMG, Oracle, and PricewaterhouseCoopers (PwC) show lower and flatter posting trends, possibly indicating a more conservative hiring approach or specific recruitment periods during the year.
+
+- Merit America, a nonprofit focused on career advancement, remains on the lower end of the spectrum. However, its presence in the top 10 indicates consistent demand in educational or workforce development roles.
+
+Overall, the chart highlights Infosys as a standout, with its consistent rise suggesting aggressive recruitment. In contrast, other firms maintain steady or slightly fluctuating volumes, reflecting industry-specific hiring cycles. This trend-based view can be valuable for job seekers, workforce planners, or analysts studying labor market activity in the consulting, healthcare, tech, and staffing sectors.
+
+## Salary Distribution by Industry (Filtered Outliers)
+
+```{python}
+Q1 = job_postings['SALARY'].quantile(0.25)
+Q3 = job_postings['SALARY'].quantile(0.75)
+IQR = Q3 - Q1
+
+filtered_salaries = job_postings[
+    (job_postings['SALARY'] >= Q1 - 1.5*IQR) & 
+    (job_postings['SALARY'] <= Q3 + 1.5*IQR)
+]
+
+fig = px.box(filtered_salaries, x="NAICS_2022_6_NAME", y="SALARY", 
+             title="Filtered Salary Distribution by Industry")
+fig.update_layout(width=1200, height=800, xaxis_tickangle=45)
+fig.update_layout(**plotly_layout)
+fig.show()
+```
+
+The box plot above provides a cleaned and focused view of salary distributions across different industries, with extreme outliers removed to highlight more meaningful central trends.
+
+- High variation across industries: Some industries display a narrow salary band, suggesting standardized roles (e.g., Retail or Administrative sectors), while others—especially in tech, consulting, and finance—show wider spreads, indicating diverse job levels and pay scales.
+
+- Technology and data-driven sectors (e.g., Computer Systems Design, Custom Software Development) tend to cluster toward the higher end of the salary spectrum, reflecting the premium placed on digital skills, AI, and advanced analytics.
+
+- Healthcare and scientific industries also show strong mid-to-upper ranges, hinting at specialized roles that demand advanced education or certifications.
+
+- In contrast, industries like Warehousing, Food Services, and Retail generally reflect lower median salaries, consistent with roles requiring less formal education or technical expertise.
+
+This visualization emphasizes how industry selection can significantly impact earning potential, even before considering role or experience level. For job seekers or workforce planners, it provides a valuable benchmark when evaluating career paths or advising on industry transitions.
+
+## Fastest-Growing Industries Over Time
+
+```{python}
+monthly_industry = (
+    job_postings.groupby([job_postings['POSTED'].dt.to_period("M"), "NAICS_2022_6_NAME"])
+    .size()
+    .reset_index(name='Postings')
+)
+monthly_industry["POSTED"] = monthly_industry["POSTED"].dt.to_timestamp()
+
+top_industries = monthly_industry.groupby("NAICS_2022_6_NAME")["Postings"].sum().nlargest(6).index
+
+top_industries = [industry for industry in top_industries if industry != "Unclassified Industry"]
+
+filtered_growth = monthly_industry[monthly_industry["NAICS_2022_6_NAME"].isin(top_industries)]
+
+fig = px.line(filtered_growth, x="POSTED", y="Postings", color="NAICS_2022_6_NAME",
+              title="Top 5 Industries by Job Postings Over Time (Excluding Unclassified)")
+fig.update_layout(**plotly_layout)
+fig.show()
+```
+
+This line plot presents job posting trends across the top five industries (excluding unclassified roles), offering a clearer picture of sector-specific hiring momentum over the past several months.
+
+- Employment Placement Agencies show the most significant increase in job postings, suggesting a surge in demand for staffing services. This could reflect broader labor market activity, such as rising contract work, workforce mobility, or seasonal hiring cycles.
+
+- Administrative Management and Consulting Services maintain consistently high levels of postings, highlighting the ongoing demand for business strategy, operations, and project management talent. The slight upward trend may align with businesses seeking advisory support during periods of uncertainty or transformation.
+
+- Computer Systems Design Services and Custom Computer Programming Services demonstrate steady hiring activity, reinforcing the continued need for tech infrastructure, custom software development, and IT support roles across industries.
+
+- Commercial Banking, while slightly more volatile, remains a key hiring industry. This might reflect fluctuations in financial service needs, regulatory adjustments, or regional economic conditions.
+
+Overall, the chart illustrates that technology, consulting, staffing, and finance remain dominant hiring sectors — with tech-related industries showing stable demand and staffing services accelerating most rapidly. These insights are valuable for job seekers targeting high-opportunity industries, and for workforce planners aiming to align talent strategies with real-time market shifts.
+
+## Salary Trends Over Time for Top 5 Occupations
+
+```{python}
+job_postings['POSTED'] = pd.to_datetime(job_postings['POSTED'])
+top_occ = job_postings['LOT_V6_OCCUPATION_NAME'].value_counts().head(5).index
+
+filtered_jobs = job_postings[job_postings['LOT_V6_OCCUPATION_NAME'].isin(top_occ)]
+filtered_jobs['Month'] = filtered_jobs['POSTED'].dt.to_period("M").dt.to_timestamp()
+
+salary_trend = (
+    filtered_jobs.groupby(['Month', 'LOT_V6_OCCUPATION_NAME'])['SALARY']
+    .mean().reset_index()
+)
+
+fig = px.line(salary_trend, 
+              x="Month", 
+              y="SALARY", 
+              color="LOT_V6_OCCUPATION_NAME",
+              title="Average Salary Trends Over Time for Top 5 Occupations")
+fig.update_layout(**plotly_layout)
+fig.show()
+```
+
+The line chart illustrates average salary trends over time for the top five most frequently posted occupations. A few meaningful patterns emerge:
+
+- Computer Systems Engineer / Architect consistently ranks as the highest-paid occupation, maintaining an average salary around or above $150,000. This reflects the strong demand for highly skilled professionals in systems architecture, a field that supports infrastructure in both legacy enterprises and cloud-native environments.
+
+- Data / Data Mining Analysts and Business Intelligence Analysts both show stable and competitive salaries in the range of ~$120,000–$130,000. These roles are closely tied to data-driven decision-making, reflecting how AI and analytics continue to shape business strategy and operations.
+
+- Clinical Analysts / Clinical Documentation Specialists demonstrate slightly lower salary levels but remain relatively consistent, indicating steady demand in the healthcare and life sciences sectors—often associated with electronic health records, compliance, and process optimization.
+
+- Business / Management Analysts show moderate but stable pay, aligning with generalist consulting and strategic support functions. While their salaries are slightly below the technical roles, they still remain above the $100,000 mark.
+
+Overall, this plot reinforces the idea that technical and analytical occupations—especially those connected to data, engineering, and system-level design—continue to command premium salaries in the job market. Notably, salary stability across all five roles suggests that these are high-value, high-demand positions, resilient to short-term economic shifts.
+
+## Average Salary by Employment Type
+
+```{python}
+avg_salary_by_type = (
+    job_postings.groupby("EMPLOYMENT_TYPE_NAME")["SALARY"]
+    .mean()
+    .sort_values(ascending=False)
+    .reset_index()
+)
+
+import plotly.express as px
+
+fig = px.bar(avg_salary_by_type, 
+             x="EMPLOYMENT_TYPE_NAME", 
+             y="SALARY",
+             title="Average Salary by Employment Type",
+             labels={"SALARY": "Average Salary ($)", "EMPLOYMENT_TYPE_NAME": "Employment Type"},
+             text="SALARY")
+
+fig.update_layout(yaxis_tickprefix="$", height=500)
+fig.update_layout(**plotly_layout)
+fig.show()
+```
+
+This bar chart compares the average salaries across different employment types, revealing key patterns in compensation based on job structure:
+
+- Full-time roles (>32 hours) lead with the highest average salary at approximately $117,324, which aligns with expectations — these positions often come with more responsibilities, benefits, and long-term career opportunities.
+
+- Part-time / full-time hybrid roles earn slightly less on average (~$104,379), potentially due to inconsistent hours or project-based employment models that offer flexibility but not always the highest compensation.
+
+- Part-time roles (≤32 hours) average just below $102,000, a surprisingly competitive figure. This could reflect specialized part-time positions (e.g., consultants or contract professionals) that still command high hourly rates despite reduced hours.
+
+Notably, the relatively narrow gap between employment types suggests that skills and job function may have a stronger influence on salary than hours alone. High-paying part-time and hybrid roles could indicate a shift toward flexible, high-skill labor markets, where experienced professionals negotiate premium pay for reduced workloads.
+
