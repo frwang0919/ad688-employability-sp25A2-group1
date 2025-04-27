@@ -1,6 +1,6 @@
 ---
 title: Data Analysis
-subtitle: Comprehensive Data Cleaning & Exploratory Analysis of Job Market Trends
+subtitle: Enhance EDA with Improved Visualizations and Deeper Insights
 author:
   - name: Furong Wang
     affiliations:

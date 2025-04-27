@@ -1,2 +1,5 @@
 /.quarto/
 lightcast_job_postings.csv
+.venv
+palmer_penguins.ipynb
+assignment03.ipynb
