@@ -3,3 +3,4 @@ lightcast_job_postings.csv
 .venv
 palmer_penguins.ipynb
 assignment03.ipynb
+job_postings_cleaned.csv

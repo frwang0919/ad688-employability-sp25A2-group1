@@ -36,17 +36,19 @@ import plotly.express as px
 
 ### To simplify our job market analysis, we need to drop columns that are either unnecessary, duplicated, or outdated. 
 Specifically, we removed:  
-**Older NAICS and SOC codes (e.g., `NAICS2`, `SOC_2`).** The North American Industry Classification System (NAICS) and Standard Occupational Classification (SOC) systems undergo periodic updates. Retaining only `NAICS_2022_6` and `SOC_2021_4` ensures we use the most recent classification standards. Moreover, older codes are redundant and may lead to inconsistencies in trend analysis.  
-**Tracking data and URLs (e.g., `ID`, `DUPLICATES`).** These columns related to data collection timestamps, unique identifiers, or internal system references, which do not contribute to meaningful insights about the job market. Similarly, URLs are not necessary for our analysis as they do not provide any additional value or context but add unnecessary complexity to the dataset.
+* **Older NAICS and SOC codes (e.g., `NAICS2`, `SOC_2`).**  
+The North American Industry Classification System (NAICS) and Standard Occupational Classification (SOC) systems undergo periodic updates. Retaining only `NAICS_2022_6` and `SOC_2021_4` ensures we use the most recent classification standards. Moreover, older codes are redundant and may lead to inconsistencies in trend analysis.  
+* **Tracking data and URLs (e.g., `ID`, `DUPLICATES`).**  
+These columns related to data collection timestamps, unique identifiers, or internal system references, which do not contribute to meaningful insights about the job market. Similarly, URLs are not necessary for our analysis as they do not provide any additional value or context but add unnecessary complexity to the dataset.
 
 ### Why removing multiple versions of NAICS/SOC codes?
 There are some reasons for this. Firstly, keeping only the latest industry and occupation classifications ensures our analysis reflects the most recent classification standards and avoid confusion and inconsistencies in classification. Additionally, reducing unnecessary columns speeds up data processing and enhances readability. This is particularly important when working with large datasets, as it minimizes the risk of errors and improves the efficiency of our analysis. Finally, it helps to focus on the most relevant information, allowing for clearer insights and conclusions regarding job market trends.
 
 ### Impact on Analysis:
 By removing outdated and irrelevant columns, we achieve:  
-1) More accurate job market trends, focusing on meaningful variables.  
-2) Easier interpretation without clutter from redundant or technical fields.  
-3) Faster analysis and visualization, improving overall efficiency.  
+* More accurate job market trends, focusing on meaningful variables.  
+* Easier interpretation without clutter from redundant or technical fields.  
+* Faster analysis and visualization, improving overall efficiency.  
 
 ```{python}
 job_postings = pd.read_csv('lightcast_job_postings.csv')
@@ -105,7 +107,7 @@ job_postings['SALARY'] = job_postings.apply(
 ```
 
 ```{python}
-job_postings['SALARY'].fillna(job_postings["SALARY"].median(), inplace = True)
+job_postings['SALARY'] = job_postings['SALARY'].fillna(job_postings["SALARY"].median())
 ```
 
 #### Dealing with Columns with >50% missing values
@@ -119,12 +121,12 @@ job_postings.dropna(thresh = len(job_postings) * 0.5, axis = 1, inplace = True)
 Categorical fields, such as `TITLE_RAW`, were filled with "Unknown" for missing values. This approach allows us to retain the integrity of the dataset without introducing bias from arbitrary values. By labeling missing categorical data as "Unknown", we can still analyze trends without losing valuable information.
 
 ```{python}
-job_postings['TITLE_RAW'].fillna("Unknown", inplace = True)
-job_postings['TITLE_CLEAN'].fillna("Unknown", inplace = True)
-job_postings['COMPANY_RAW'].fillna("Unknown", inplace = True)
-job_postings['MSA_NAME'].fillna("Unknown", inplace = True)
-job_postings['MSA_NAME_OUTGOING'].fillna("Unknown", inplace = True)
-job_postings['MSA_NAME_INCOMING'].fillna("Unknown", inplace = True)
+job_postings['TITLE_RAW'] = job_postings['TITLE_RAW'].fillna("Unknown")
+job_postings['TITLE_CLEAN'] = job_postings['TITLE_CLEAN'].fillna("Unknown")
+job_postings['COMPANY_RAW'] = job_postings['COMPANY_RAW'].fillna("Unknown")
+job_postings['MSA_NAME'] = job_postings['MSA_NAME'].fillna("Unknown")
+job_postings['MSA_NAME_OUTGOING'] = job_postings['MSA_NAME_OUTGOING'].fillna("Unknown")
+job_postings['MSA_NAME_INCOMING'] = job_postings['MSA_NAME_INCOMING'].fillna("Unknown")
 ```
 
 #### Dealing with Datetime fields
@@ -165,16 +167,16 @@ job_postings['MIN_YEARS_EXPERIENCE'] = job_postings.apply(
 ```
 
 ```{python}
-job_postings['MIN_YEARS_EXPERIENCE'].fillna(job_postings["MIN_YEARS_EXPERIENCE"].median(), inplace = True)
+job_postings['MIN_YEARS_EXPERIENCE'] = job_postings['MIN_YEARS_EXPERIENCE'].fillna(job_postings["MIN_YEARS_EXPERIENCE"].median())
 ```
 
 `DURATION` variable is also a numerical field, but it has a different approach. We will fill the missing values with the difference between the `POSTED` and `EXPIRED`, which calculates the actual time span based on the available dates.
 
 ```{python}
 def impute_duration(cols):
-    posted = cols[0]
-    expired = cols[1]
-    duration = cols[2]
+    posted = cols.iloc[0]
+    expired = cols.iloc[1]
+    duration = cols.iloc[2]
 
     if pd.isnull(duration):
         return expired - posted
@@ -192,6 +194,10 @@ job_postings['DURATION'] = job_postings[['POSTED', 'EXPIRED', 'DURATION']].apply
 
 ```{python}
 job_postings = job_postings.drop_duplicates(subset=["TITLE_NAME", "COMPANY_NAME", "LOCATION", "POSTED"], keep = "first")
+```
+
+```{python}
+job_postings.to_csv('job_postings_cleaned.csv', index=False)
 ```
 
 # **Exploratory Data Analysis (EDA)**
@@ -226,7 +232,7 @@ fig.show()
 
 The visualization of the top 20 companies by job postings (excluding "Unclassified") highlights key trends in the job market, particularly in the increasing demand for AI-related roles. Many of the companies with the most postings—Deloitte, Accenture, PricewaterhouseCoopers (PwC), Oracle, Infosys, Meta, and CDW—are major players in technology, consulting, and digital transformation, sectors that have been heavily investing in AI, machine learning, and data-driven innovation.
 
-The dominance of these companies in job postings suggests that careers in AI and technology-related fields are in high demand. Consulting giants like Deloitte, Accenture, PwC, and KPMG are actively expanding their AI divisions, helping businesses integrate AI into their operations. For instance, Deloitte has launched several AI tools, including chatbots like "DARTbot" for audit professionals and "NavigAite" for document review, to enhance efficiency and client services @stokes2025. Additionally, companies like Meta are pioneers in AI research, focusing on areas such as generative AI, automation, and data science. Even in non-tech sectors, financial and healthcare firms such as Citigroup, Cardinal Health, and Blue Cross Blue Shield are leveraging AI for fraud detection, risk assessment, and personalized healthcare.
+The dominance of these companies in job postings suggests that careers in AI and technology-related fields are in high demand. Consulting giants like Deloitte, Accenture, PwC, and KPMG are actively expanding their AI divisions, helping businesses integrate AI into their operations. For instance, Deloitte has launched several AI tools, including chatbots like "DARTbot" for audit professionals and "NavigAite" for document review, to enhance efficiency and client services (Stokes, 2025). Additionally, companies like Meta are pioneers in AI research, focusing on areas such as generative AI, automation, and data science. Even in non-tech sectors, financial and healthcare firms such as Citigroup, Cardinal Health, and Blue Cross Blue Shield are leveraging AI for fraud detection, risk assessment, and personalized healthcare.
 
 These trends indicate that pursuing a career in AI-related fields, such as data science, machine learning engineering, and AI research, could provide greater job opportunities and higher earning potential. The strong presence of technology and consulting firms in job postings reflects how AI is becoming a fundamental part of business strategies across industries. While traditional, non-AI careers will continue to exist, the rapid push toward automation and intelligent systems suggests that AI-related skills will be increasingly valuable in both technical and non-technical roles. As industries continue adopting AI, professionals who develop expertise in this area may have a competitive advantage in the evolving job market.
 

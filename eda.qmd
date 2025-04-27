@@ -1,5 +1,5 @@
 ---
-title: Data Analysis
+title: Exploratory Data Analysis
 subtitle: Enhance EDA with Improved Visualizations and Deeper Insights
 author:
   - name: Furong Wang
@@ -30,121 +30,8 @@ import missingno as msno
 import plotly.express as px
 ```
 
-# **Data Cleaning**
-
 ```{python}
-job_postings = pd.read_csv('lightcast_job_postings.csv')
-```
-
-```{python}
-columns_to_drop = [
-    "ID", "URL", "ACTIVE_URLS", "DUPLICATES", "LAST_UPDATED_TIMESTAMP", "ACTIVE_URLS", "TITLE", "COMPANY",
-    "MSA", "STATE", "COUNTY", "CITY", "COUNTY_OUTGOING", "COUNTY_INCOMING", "MSA_OUTGOING", "MSA_INCOMING",
-    "ONET", "ONET_2019", "CIP2", "CIP4", "CIP6", "MODELED_DURATION", "MODELED_EXPIRED",
-    "CERTIFICATIONS", "COMMON_SKILLS", "SPECIALIZED_SKILLS", "SKILLS", "SOFTWARE_SKILLS",
-    "LOT_V6_CAREER_AREA", "LOT_V6_OCCUPATION_GROUP", "LOT_V6_OCCUPATION", "LOT_V6_SPECIALIZED_OCCUPATION",
-    "LOT_OCCUPATION_GROUP", "LOT_SPECIALIZED_OCCUPATION", "LOT_OCCUPATION", "LOT_CAREER_AREA",
-    "NAICS2", "NAICS2_NAME", "NAICS3", "NAICS3_NAME", "NAICS4", "NAICS4_NAME", "NAICS5", "NAICS5_NAME", "NAICS6",
-    "NAICS_2022_2", "NAICS_2022_2_NAME", "NAICS_2022_3", "NAICS_2022_3_NAME", "NAICS_2022_4", "NAICS_2022_4_NAME",
-    "NAICS_2022_5", "NAICS_2022_5_NAME", "NAICS_2022_6",
-    "SOC_2", "SOC_2_NAME", "SOC_3", "SOC_3_NAME", "SOC_5", "SOC_5_NAME", "SOC_4",
-    "SOC_2021_2", "SOC_2021_2_NAME", "SOC_2021_3", "SOC_2021_3_NAME", "SOC_2021_5", "SOC_2021_5_NAME", "SOC_2021_4"
-]
-
-job_postings.drop(columns = columns_to_drop, inplace = True)
-```
-
-```{python}
-title_median_salary = job_postings.groupby('TITLE_NAME')['SALARY'].median()
-industry_median_salary = job_postings.groupby('NAICS_2022_6_NAME')['SALARY'].median()
-```
-
-```{python}
-job_postings['SALARY'] = job_postings.apply(
-    lambda row: title_median_salary[row['TITLE_NAME']]
-    if pd.isna(row['SALARY']) and row['TITLE_NAME'] in title_median_salary else row['SALARY'], 
-    axis=1
-)
-```
-
-```{python}
-job_postings['SALARY'] = job_postings.apply(
-    lambda row: industry_median_salary[row['NAICS_2022_6_NAME']]
-    if pd.isna(row['SALARY']) and row['NAICS_2022_6_NAME'] in industry_median_salary else row['SALARY'], 
-    axis=1
-)
-```
-
-```{python}
-job_postings['SALARY'].fillna(job_postings["SALARY"].median(), inplace = True)
-```
-
-```{python}
-job_postings.dropna(thresh = len(job_postings) * 0.5, axis = 1, inplace = True)
-```
-
-```{python}
-job_postings['TITLE_RAW'].fillna("Unknown", inplace = True)
-job_postings['TITLE_CLEAN'].fillna("Unknown", inplace = True)
-job_postings['COMPANY_RAW'].fillna("Unknown", inplace = True)
-job_postings['MSA_NAME'].fillna("Unknown", inplace = True)
-job_postings['MSA_NAME_OUTGOING'].fillna("Unknown", inplace = True)
-job_postings['MSA_NAME_INCOMING'].fillna("Unknown", inplace = True)
-```
-
-```{python}
-job_postings['POSTED'] = pd.to_datetime(job_postings['POSTED'])
-job_postings['EXPIRED'] = pd.to_datetime(job_postings['EXPIRED'])
-```
-
-```{python}
-max_expired_date = job_postings['EXPIRED'].max()
-job_postings['EXPIRED'] = job_postings['EXPIRED'].fillna(max_expired_date)
-```
-
-```{python}
-title_median_exp = job_postings.groupby('TITLE_NAME')['MIN_YEARS_EXPERIENCE'].median()
-industry_median_exp = job_postings.groupby('NAICS_2022_6_NAME')['MIN_YEARS_EXPERIENCE'].median()
-```
-
-```{python}
-job_postings['MIN_YEARS_EXPERIENCE'] = job_postings.apply(
-    lambda row: title_median_exp[row['TITLE_NAME']]
-    if pd.isna(row['MIN_YEARS_EXPERIENCE']) and row['TITLE_NAME'] in title_median_exp else row['MIN_YEARS_EXPERIENCE'], 
-    axis=1
-)
-```
-
-```{python}
-job_postings['MIN_YEARS_EXPERIENCE'] = job_postings.apply(
-    lambda row: industry_median_exp[row['NAICS_2022_6_NAME']]
-    if pd.isna(row['MIN_YEARS_EXPERIENCE']) and row['NAICS_2022_6_NAME'] in industry_median_exp else row['MIN_YEARS_EXPERIENCE'], 
-    axis=1
-)
-```
-
-```{python}
-job_postings['MIN_YEARS_EXPERIENCE'].fillna(job_postings["MIN_YEARS_EXPERIENCE"].median(), inplace = True)
-```
-
-```{python}
-def impute_duration(cols):
-    posted = cols[0]
-    expired = cols[1]
-    duration = cols[2]
-
-    if pd.isnull(duration):
-        return expired - posted
-    else: 
-        return duration
-```
-
-```{python}
-job_postings['DURATION'] = job_postings[['POSTED', 'EXPIRED', 'DURATION']].apply(impute_duration, axis = 1)
-```
-
-```{python}
-job_postings = job_postings.drop_duplicates(subset=["TITLE_NAME", "COMPANY_NAME", "LOCATION", "POSTED"], keep = "first")
+job_postings = pd.read_csv('job_postings_cleaned.csv')
 ```
 
 # **Exploratory Data Analysis & Visualization**
@@ -157,8 +44,32 @@ plotly_layout = dict(
     plot_bgcolor="white",
     margin=dict(t=60, l=60, r=30, b=60),
     legend=dict(bordercolor="lightgray", borderwidth=1),
-    xaxis=dict(title_font=dict(size=16), tickfont=dict(size=12), showgrid=True, gridcolor="lightgray"),
-    yaxis=dict(title_font=dict(size=16), tickfont=dict(size=12), showgrid=True, gridcolor="lightgray"),
+    xaxis=dict(
+        title_font=dict(size=16, color="black"),  
+        tickfont=dict(size=12, color="black"),    
+        showgrid=True, 
+        gridcolor="lightgray",
+        showline=True,
+        linecolor="black",
+        linewidth=1,
+        mirror=True,
+        zeroline=True,
+        zerolinecolor="gray",
+        zerolinewidth=1
+    ),
+    yaxis=dict(
+        title_font=dict(size=16, color="black"),  
+        tickfont=dict(size=12, color="black"),    
+        showgrid=True, 
+        gridcolor="lightgray",
+        showline=True,
+        linecolor="black",
+        linewidth=1,
+        mirror=True,
+        zeroline=True,
+        zerolinecolor="gray",
+        zerolinewidth=1
+    ),
 )
 ```
 
