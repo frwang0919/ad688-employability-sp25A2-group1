@@ -1,0 +1,422 @@
+---
+title: Machine Learning Methods
+subtitle: Clustering and Machine Learning Techniques for Job Market Trends Analysis
+author:
+  - name: Furong Wang
+    affiliations:
+      - id: bu
+        name: Boston University
+        city: Boston
+        state: MA
+  - name: Marco Perez Garcia
+    affiliations:
+      - ref: bu
+bibliography: references.bib
+csl: csl/econometrica.csl
+format:
+  html:
+    toc: true
+    number-sections: true
+    df-print: paged
+jupyter: python3
+---
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.express as px
+from pyspark.sql import SparkSession
+import plotly.io as pio
+from pyspark.ml.feature import StringIndexer, OneHotEncoder, VectorAssembler, StandardScaler
+from pyspark.ml import Pipeline
+from tabulate import tabulate
+from IPython.display import HTML
+from pyspark.sql import Window
+from pyspark.sql import functions as F
+from pyspark.sql.functions import col, pow, sqrt, abs, mean, avg, sum as spark_sum, round as spark_round, row_number
+from pyspark.sql.types import DoubleType
+from pyspark.ml.regression import RandomForestRegressor
+from pyspark.ml.evaluation import RegressionEvaluator
+from pyspark.ml.clustering import KMeans
+from pyspark.ml.evaluation import ClusteringEvaluator
+import plotly.graph_objects as go
+```
+
+```{python}
+plotly_layout = dict(
+    font=dict(family="Arial", size=14),
+    title_font=dict(size=20, family="Arial", color="black"),
+    paper_bgcolor="white",
+    plot_bgcolor="white",
+    margin=dict(t=60, l=60, r=30, b=60),
+    legend=dict(bordercolor="lightgray", borderwidth=1),
+    xaxis=dict(
+        title_font=dict(size=16, color="black"),  
+        tickfont=dict(size=12, color="black"),    
+        showgrid=True, 
+        gridcolor="lightgray",
+        showline=True,
+        linecolor="black",
+        linewidth=1,
+        mirror=True,
+        zeroline=True,
+        zerolinecolor="gray",
+        zerolinewidth=1
+    ),
+    yaxis=dict(
+        title_font=dict(size=16, color="black"),  
+        tickfont=dict(size=12, color="black"),    
+        showgrid=True, 
+        gridcolor="lightgray",
+        showline=True,
+        linecolor="black",
+        linewidth=1,
+        mirror=True,
+        zeroline=True,
+        zerolinecolor="gray",
+        zerolinewidth=1
+    ),
+)
+```
+
+# **Unsupervised Learning: KMeans Clustering**
+
+In this section, we used KMeans clustering to group job postings based on `Minimum Years of Experience` and `Salary`. Our goal was to find natural patterns in how job roles are distributed across different experience and salary ranges. After clustering, we used `NAICS6_NAME` industry classifications to interpret the types of industries represented in each cluster.
+
+By doing so, we can better understand how different industries vary in their experience requirements and compensation levels, providing insights into salary structures across the job market.
+
+```{python}
+spark = SparkSession.builder.appName("LightcastData").getOrCreate()
+
+# Load Data
+df = spark.read.option("header", "true").option("inferSchema", "true").option("multiLine","true").option("escape", "\"").csv("lightcast_job_postings.csv")
+
+# Show Schema and Sample Data
+# df.printSchema() 
+# df.show(5)
+
+# Register the DataFrame as a temporary SQL table
+df.createOrReplaceTempView("job_postings")
+```
+
+```{python}
+df = df.dropna(subset=['MIN_YEARS_EXPERIENCE', 'SALARY', 'NAICS6_NAME'])
+df = df.filter(df.NAICS6_NAME != 'Unclassified Industry')
+
+df_casted = df.select(
+    col("MIN_YEARS_EXPERIENCE").cast(DoubleType()),
+    col("SALARY").cast(DoubleType()),
+    col("NAICS6_NAME")
+)
+
+assembler = VectorAssembler(
+    inputCols=["MIN_YEARS_EXPERIENCE", "SALARY"], 
+    outputCol='features_unscaled'
+)
+df_features = assembler.transform(df_casted)
+```
+
+```{python}
+scaler = StandardScaler(
+    inputCol='features_unscaled', 
+    outputCol='features', 
+    withMean=True, 
+    withStd=True
+)
+scaler_model = scaler.fit(df_features)
+df_scaled = scaler_model.transform(df_features)
+```
+
+```{python}
+scores = []
+ks = list(range(2, 9))
+
+for k in ks:
+    kmeans = KMeans().setK(k).setSeed(42).setFeaturesCol("features")
+    model = kmeans.fit(df_scaled)
+    transformed = model.transform(df_scaled)
+
+    evaluator = ClusteringEvaluator(
+        featuresCol="features", predictionCol="prediction", metricName="silhouette")
+    score = evaluator.evaluate(transformed)
+    scores.append(score)
+
+fig = go.Figure()
+fig.add_trace(go.Scatter(x=ks, y=scores, mode='lines+markers', name='Silhouette Score'))
+fig.update_layout(title="Silhouette Score vs. k", 
+                  xaxis_title="k",
+                  yaxis_title="Score",
+                  template="simple_white",
+                  width=900)
+fig.update_layout(**plotly_layout) 
+fig.show()
+```
+
+```{python}
+kmeans_final = KMeans(featuresCol='features', k=4, seed=688)
+model_final = kmeans_final.fit(df_scaled)
+
+predictions = model_final.transform(df_scaled)
+```
+
+```{python}
+industry_counts = predictions.groupBy('prediction', 'NAICS6_NAME').count()
+
+window_spec = Window.partitionBy('prediction')
+industry_counts = industry_counts.withColumn('total', spark_sum('count').over(window_spec))
+
+industry_counts = industry_counts.withColumn('percentage', spark_round(col('count') / col('total') * 100, 2))
+
+window_top5 = Window.partitionBy('prediction').orderBy(col('percentage').desc())
+industry_top5 = industry_counts.withColumn('row_num', row_number().over(window_top5)).filter(col('row_num') <= 5)
+
+industry_top5.orderBy('prediction', 'row_num').show(100, truncate=False)
+```
+
+```{python}
+pandas_df = predictions.select('MIN_YEARS_EXPERIENCE', 'SALARY', 'prediction').toPandas()
+
+pandas_df['Cluster_Name'] = pandas_df['prediction'].map({0: 'Cluster 1', 
+                                                         1: 'Cluster 2', 
+                                                         2: 'Cluster 3',
+                                                         3: 'Cluster 4'})
+
+plt.figure(figsize=(8, 5))
+fig = px.scatter(
+    pandas_df, 
+    x="MIN_YEARS_EXPERIENCE", 
+    y="SALARY", 
+    color="Cluster_Name", 
+    title="K-Means Clustering on Job Postings Data", 
+    labels={
+        "MIN_YEARS_EXPERIENCE": "Minimum Years of Experience", 
+        "SALARY": "Salary",
+        "Cluster_Name": "Cluster"
+    },
+    category_orders={"Cluster_Name": ["Cluster 1", "Cluster 2", "Cluster 3", "Cluster 4"]}
+)
+
+fig.update_layout(**plotly_layout,
+                  width=800,
+                  height=500) 
+fig.show()
+```
+
+Based on the silhouette score of the K value and practical anlysis requirements, we identified four distinct clusters that capture major compensation patterns in the labor market.
+
+**Here are key findings based on salary and experience trends:**
+
+- **Cluster 1:** 
+    - **Experience/Salary Pattern:** Requires higher minimum years of experience. Offers only moderate salary levels despite higher experience.
+    - **Top Industries:** Computer Systems Design Services, Administrative Management and General Management Consulting Services, and Custom Computer Programming Services.
+    - **Insight:** Jobs demanding significant prior experience but offering relatively moderate compensation. Indicates competitive markets in tech and consulting sectors.
+- **Cluster 2:** 
+    - **Experience/Salary Pattern:** Consistently the highest salaries across a wide range of experience levels.
+    - **Top Industries:** Administrative Management and General Management Consulting Services, Web Search Portals and Other Information Services, and Commercial Banking.
+    - **Insight:** Reflects premium-paying roles in consulting, web services, and finance. This suggests opportunities for substantial earnings even with moderate experience.
+- **Cluster 3:** 
+    - **Experience/Salary Pattern:** Requires lower years of experience. Salary levels are generally the lowest.
+    - **Top Industries:** Administrative Management and General Management Consulting Services, Employment Placement Agencies, and Direct Health and Medical Insurance Carriers.
+    - **Insight:** Entry-level or early-career roles in sectors with limited immediate salary growth.
+- **Cluster 4:** 
+    - **Experience/Salary Pattern:** Moderate years of experience required. Salary levels are moderately high.
+    - **Top Industries:** Administrative Management and General Management Consulting Services, Employment Placement Agencies, and Commercial Banking.
+    - **Insight:** Steady career tracks offering good compensation for mid-experience professionals.
+
+**Implications for Salary and Compensation Trends:**
+- Salary growth is not always linear with experience; certain clusters show salary plateaus despite increasing experience.
+- Industry effects are significant: sectors like Professional Services and Finance consistently appear across clusters, but compensation levels vary depending on experience requirements.
+- High-paying opportunities exist both at low and high experience levels, depending on industry and role specialization.
+
+
+**Implications for Job Seekers:**
+- **High Salary Aspirations:** Target roles in Cluster 2 industries like consulting, finance, and web services where premium salaries are achievable even with moderate experience.
+
+- **Career Launch:** Cluster 3 industries may provide easier entry points for new graduates but with lower starting salaries. In contrast, positions in Cluster 4 offer a good balance between experience investment and salary rewards.
+
+- **Beware of High-Experience/Moderate-Pay Sectors:** Cluster 1 jobs may require significant experience without corresponding salary premiums, requiring careful career planning.
+
+# **Supervised Learning: Random Forest Regression**
+
+To deepen our analysis on Salary and Compensation Trends, we constructed a Random Forest Regression model using salary as the target variable. The goal of this model is to predict salary outcomes based on key job posting attributes, and to identify the relative importance of different factors influencing compensation in the labor market.
+
+The predictor variables selected for the model include: `DURATION`, `MIN_YEARS_EXPERIENCE`, `LOT_V6_OCCUPATION_NAME`, `STATE_NAME`, `EMPLOYMENT_TYPE_NAME`
+
+```{python}
+df_rf = df.dropna(subset=['DURATION', 'MIN_YEARS_EXPERIENCE',  
+                          'LOT_V6_OCCUPATION_NAME', 'STATE_NAME', 'EMPLOYMENT_TYPE_NAME',
+                          'SALARY'])
+
+categorical_cols = ['LOT_V6_OCCUPATION_NAME', 'STATE_NAME', 'EMPLOYMENT_TYPE_NAME'] 
+continuous_cols = ['DURATION', 'MIN_YEARS_EXPERIENCE'] 
+
+# Index and One-Hot Encode
+indexers = [StringIndexer(inputCol=col, outputCol=f"{col}_idx", handleInvalid='skip') for col in categorical_cols]
+encoders = [OneHotEncoder(inputCol=f"{col}_idx", outputCol=f"{col}_vec") for col in categorical_cols]
+
+# Assemble base features 
+assembler = VectorAssembler(
+    inputCols=continuous_cols 
+    + [f"{col}_vec" for col in categorical_cols], 
+    outputCol="features"
+)
+
+# Build pipeline and transform
+pipeline = Pipeline(stages=indexers + encoders + [assembler]) 
+data = pipeline.fit(df_rf).transform(df_rf)
+
+# Show final structure
+data.select("SALARY", "features").show(5, truncate=False)
+```
+
+```{python}
+train_data, test_data = data.randomSplit([0.8, 0.2], seed=688)
+
+rf = RandomForestRegressor(featuresCol="features",
+                           labelCol="SALARY", 
+                           numTrees=150,
+                           maxDepth=9, 
+                           seed=688 
+                           )
+
+# Train model
+rf_model = rf.fit(train_data.select("SALARY", "features"))
+
+# Generate predictions
+rf_preds = rf_model.transform(train_data.select("SALARY", "features"))
+```
+
+```{python}
+# Extract feature importances
+def get_actual_feature_names(df_rf, assembler, encoded_cols):
+    full_feature_names = []
+
+    for col_name in assembler.getInputCols():
+        if col_name in encoded_cols:
+            try:
+                attr_meta = df_rf.schema[col_name].metadata['ml_attr']['attrs']
+                for attr_group in attr_meta.values():
+                    for attr in attr_group:
+                        full_feature_names.append(attr['name'])
+            except:
+                full_feature_names.append(col_name)
+        else:
+            full_feature_names.append(col_name)
+
+    return full_feature_names
+
+encoded_cols = [f"{col}_vec" for col in categorical_cols] 
+feature_names = get_actual_feature_names(data, assembler, encoded_cols)
+importances = rf_model.featureImportances.toArray() 
+```
+
+```{python}
+def clean_feature_names(feature_list):
+    clean_names = []
+    for name in feature_list:
+        if isinstance(name, list):
+            clean_names.append(", ".join(str(n) for n in name))
+        elif isinstance(name, str) and name.startswith("["):
+            clean_names.append(name.replace("[", "").replace("]", "").replace("'", "").replace('"', '').strip())
+        else:
+            clean_names.append(str(name))
+    return clean_names
+
+# Build dataframe
+importance_df = pd.DataFrame({
+    "Feature": feature_names,
+    "Importance": importances
+}).sort_values(by="Importance", ascending=False)
+
+importance_df["Feature"] = clean_feature_names(importance_df["Feature"])
+top_importance_df = importance_df.head(15)
+
+# Plot
+plt.figure(figsize=(9, 6))
+sns.barplot(
+    x="Importance",
+    y="Feature",
+    data=top_importance_df,
+    hue="Feature",
+    palette="viridis"
+)
+
+import textwrap
+labels = plt.gca().get_yticklabels()
+new_labels = [textwrap.fill(label.get_text(), width=30) for label in labels]
+plt.yticks(range(len(new_labels)), new_labels, fontsize=9)
+plt.xticks(fontsize=10)
+
+plt.title("Top 15 Feature Importances from Random Forest Model", fontsize=14, fontweight='bold')
+plt.xlabel("Importance", fontsize=12, fontweight='bold')
+plt.ylabel("Feature", fontsize=12, fontweight='bold')
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+evaluator_r2 = RegressionEvaluator(labelCol="SALARY", predictionCol="prediction", metricName="r2")
+
+rf_preds = rf_model.transform(test_data)
+rf_residuals = rf_preds.select(
+    col("SALARY"),
+    col("prediction"),
+    (col("SALARY") - col("prediction")).alias("residual")
+)
+
+rf_r2   = evaluator_r2.evaluate(rf_preds) 
+rf_rmse = np.sqrt(rf_residuals.select(avg(pow(col("residual"), 2))).first()[0]) 
+rf_aic  = None
+rf_bic  = None
+
+rf_pdf = rf_residuals.select("SALARY", col("prediction").alias("RandomForest")).toPandas()
+rf_df = pd.DataFrame({"SALARY": rf_pdf["SALARY"], "RandomForest": rf_pdf["RandomForest"]})
+```
+
+```{python}
+plt.figure(figsize=(7, 17))
+sns.set(style="whitegrid")
+
+models = {"RandomForest": (rf_rmse, rf_r2, "NA", "NA")}
+
+model_dfs = {"RandomForest": rf_df}
+
+for idx, (model_name, (rmse, r2, aic, bic)) in enumerate(models.items(), 1):
+    plt.subplot(3, 1, idx)
+    
+    model_data = model_dfs[model_name]
+    
+    sns.scatterplot(x="SALARY", y=model_name, data=model_data, alpha=0.5, label=model_name)
+    
+    x_min = model_data["SALARY"].min()
+    x_max = model_data["SALARY"].max()
+    plt.plot([x_min, x_max], [x_min, x_max], 'r-', label="Ideal Fit")
+    
+    if aic != "NA" and bic != "NA":
+        plt.title(f"{model_name} Prediction\nRMSE={rmse:.1f} | R²={r2:.3f} | AIC={aic:.1f} | BIC={bic:.1f}", fontweight="bold")
+    else:
+        plt.title(f"{model_name} Prediction\nRMSE={rmse:.1f} | R²={r2:.3f} | AIC=NA | BIC=NA", fontweight="bold")
+    
+    plt.xlabel("Actual Salary", fontweight="bold")
+    plt.ylabel("Predicted Salary", fontweight="bold")
+    plt.legend()
+
+plt.tight_layout()
+plt.show()
+```
+
+**Model Evaluation:**
+- The R-Squared of 0.454 indicates a moderate level of predictive power, suggesting that the model captures a substantial portion of salary variability but leaves room for improvement. 
+- The scatterplot shows that most predictions are reasonably aligned with the actual salaries but tend to underpredict higher salary values (especially above $200,000), which is common due to the small number of very high salaries ("long tail" effect).
+
+**Feature Importance Analysis:**
+- The top 15 feature importances from random forest model show how different factors contribute to salary predictions. In our model, years of experience are by far the strongest predictor of salary. Having some certain occupation titles can also greatly affect salary expectations. Interestingly, the job posting duration is also an important factor in salary prediction, which may be related to stable roles. 
+- On the other hand, geographic location and job type have less impact on salary predictions, with states like Oregon and California showing specific salary patterns.
+
+**Implications for Job Seekers:**
+- **Experience Pays Off:** The model shows that minimum years of experience is the dominant factor influencing salary. For job seekers, gaining and accurately showcasing professional experience is crucial to achieving higher salary outcomes. Moreover, investing in data-related skills can be a smart career move.
+- **Occupation Choice Matters:** Specific technical roles (especially Computer Systems Engineers, Data Analysts, and Business Intelligence Analysts) are associated with higher salaries. Choosing high-demand, specialized roles can significantly improve salary prospects.
+- **Location Strategy:** While experience and occupation dominate, geography still plays a role, for example, states like Oregon, California, and New York affect salary expectations. Job seekers willing to relocate or negotiate for remote work with companies based in higher-paying states may gain salary advantages.
+
