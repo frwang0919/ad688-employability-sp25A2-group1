@@ -79,7 +79,7 @@ job_postings.drop(columns = columns_to_drop, inplace = True)
 #plt.figure(figsize=(8, 6))
 #msno.heatmap(job_postings)
 #plt.title("Missing Values Heatmap")
-#plt.show()
+# plt.show()
 ```
 
 #### Dealing with the Salary Column
