@@ -1,0 +1,1911 @@
+{
+  "cells": [
+    {
+      "cell_type": "raw",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: \"Evaluating Personal Job Market Prospects in 2024\"\n",
+        "subtitle: \"Final Report\"\n",
+        "author:\n",
+        "  - name: Furong Wang\n",
+        "    affiliations:\n",
+        "      - ref: bu\n",
+        "  - name: Marco Perez\n",
+        "    affiliations:\n",
+        "      - ref: bu\n",
+        "affiliations:\n",
+        "  - id: bu\n",
+        "    name: Boston University\n",
+        "    city: Boston\n",
+        "    state: MA\n",
+        "date: today\n",
+        "date-modified: today\n",
+        "date-format: long\n",
+        "format:\n",
+        "  docx: default\n",
+        "bibliography: references.bib\n",
+        "---\n",
+        "\n",
+        "\n",
+        "\n",
+        "# Home \n",
+        "\n",
+        "---"
+      ],
+      "id": "0a7f0229"
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "title: Data Cleaning & Exploration\n",
+        "subtitle: Comprehensive Data Cleaning & Exploratory Analysis of Job Market Trends\n",
+        "author:\n",
+        "  - name: Furong Wang\n",
+        "    affiliations:\n",
+        "      - id: bu\n",
+        "        name: Boston University\n",
+        "        city: Boston\n",
+        "        state: MA\n",
+        "  - name: Marco Perez Garcia\n",
+        "    affiliations:\n",
+        "      - ref: bu\n",
+        "bibliography: references.bib\n",
+        "csl: csl/econometrica.csl\n",
+        "format:\n",
+        "  html:\n",
+        "    toc: true\n",
+        "    number-sections: true\n",
+        "    df-print: paged\n",
+        "jupyter: python3"
+      ],
+      "id": "cc334ce8"
+    },
+    {
+      "cell_type": "raw",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "# Topic: Salary & Compensation Trends  \n",
+        "## Introduction\n",
+        "The global job market is undergoing a significant transformation due to various factors, \n",
+        "including the rapid adoption of **artificial intelligence (AI)**, evolving work models \n",
+        "such as **remote work**, and shifts in **industry-specific** wage structures. For job seekers, \n",
+        "understanding these dynamics is crucial for making informed decisions about career paths, \n",
+        "salary expectations, and work environment preferences. This research aims to **analyze \n",
+        "salary trends for AI and non-AI careers, as well as the impact of remote work, regional \n",
+        "differences, and specific industry on salaries**.\n",
+        "\n",
+        "## Research Rationale\n",
+        "As the economy adapts to AI technologies, many industries are experiencing shifts in job \n",
+        "structures and salary scales. This topic is important because **job seekers need to be aware \n",
+        "of the changing landscape to make career decisions that align with future trends and personal goals**. \n",
+        "These years, the rise of AI and automation is creating new job roles while displacing others. \n",
+        "Moreover, remote work, which played an important role during the pandemic, has become a permanent \n",
+        "feature for many industries. However, questions remain about how compensation for remote roles compares \n",
+        "to in-office positions and how it varies across regions and industries. Based on typical trends on the \n",
+        "job market, this analysis will explore several **key findings**:\n",
+        "\n",
+        "- How do salaries differ across AI vs. non-AI careers?\n",
+        "- What regions offer the highest-paying jobs in AI-related and traditional careers?\n",
+        "- Are remote jobs better paying than in-office roles?\n",
+        "- What industries saw the biggest wage growth in 2024?\n",
+        "\n",
+        "\n",
+        "\n",
+        "# Introduction\n",
+        "\n",
+        "---"
+      ],
+      "id": "d37a27a4"
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "title: \"Salary & Compensation Trends in AI vs. Non-AI Careers\"\n",
+        "author: \"Furong Wang, Marco Perez Garcia\"\n",
+        "date: today\n",
+        "format: \n",
+        "  html:\n",
+        "    bibliography: references.bib\n",
+        "    csl: csl/econometrica.csl\n",
+        "    toc: true\n",
+        "---\n",
+        "\n",
+        "Recent research has highlighted a growing divergence in salary trends between artificial intelligence\n",
+        "(AI)-focused careers and more traditional data science roles. @zhu2024unveiling found that professionals \n",
+        "specializing in AI-related fields, such as machine learning engineers and AI researchers, consistently \n",
+        "command higher salaries than their non-AI counterparts, including data analysts and general data scientists. \n",
+        "This difference in compensation reflects the increasing demand for AI expertise as industries integrate automation, \n",
+        "deep learning, and predictive analytics into their operations. While AI roles require specialized skills in areas \n",
+        "such as neural networks and natural language processing, traditional data science positions often focus \n",
+        "more on business intelligence, statistical analysis, and data visualization, which though even that is valuable\n",
+        "it does not see the same salary premiums.\n",
+        "\n",
+        "Other studies reinforce this trend, showing how company size and industry specialization further impact \n",
+        "salary structures. @chen2024unraveling analyzed U.S. salary trends from 2020 to 2023, reporting that \n",
+        "salaries in AI-driven roles have shown steady increases, particularly within mid-to-large tech companies \n",
+        "investing in AI innovation. In contrast, non-AI data science roles, such as data analysts, have experienced \n",
+        "slower growth, and some projections indicate potential stagnation or slight salary declines in 2024. Similarly, \n",
+        "@quan2023human found that professionals with expertise in AI, cloud computing, and big data technologies \n",
+        "earn higher salaries than those with more generalist skills. Their findings suggest that as AI adoption expands \n",
+        "across industries, the wage gap between AI and non-AI roles may continue to grow, emphasizing the importance of \n",
+        "specialized technical expertise for long-term career advancement in data science.\n",
+        "\n",
+        "## References\n",
+        "\n",
+        "\n",
+        "\n",
+        "# Data Cleaning"
+      ],
+      "id": "87617380"
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: Data Cleaning & Exploration\n",
+        "subtitle: Comprehensive Data Cleaning & Exploratory Analysis of Job Market Trends\n",
+        "author:\n",
+        "  - name: Furong Wang\n",
+        "    affiliations:\n",
+        "      - id: bu\n",
+        "        name: Boston University\n",
+        "        city: Boston\n",
+        "        state: MA\n",
+        "  - name: Marco Perez Garcia\n",
+        "    affiliations:\n",
+        "      - ref: bu\n",
+        "bibliography: references.bib\n",
+        "csl: csl/econometrica.csl\n",
+        "format:\n",
+        "  html:\n",
+        "    toc: true\n",
+        "    number-sections: true\n",
+        "    df-print: paged\n",
+        "jupyter: python3\n",
+        "---\n",
+        "\n",
+        "# **Data Cleaning & Preprocessing**"
+      ],
+      "id": "37ad4952"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import pandas as pd\n",
+        "import numpy as np\n",
+        "import matplotlib.pyplot as plt\n",
+        "import seaborn as sns\n",
+        "import missingno as msno\n",
+        "import plotly.express as px"
+      ],
+      "id": "c2c6ad08",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Dropping Unnecessary Columns\n",
+        "\n",
+        "### To simplify our job market analysis, we need to drop columns that are either unnecessary, duplicated, or outdated. \n",
+        "Specifically, we removed:  \n",
+        "- **Older NAICS and SOC codes (e.g., `NAICS2`, `SOC_2`).**  \n",
+        "The North American Industry Classification System (NAICS) and Standard Occupational Classification (SOC) systems undergo periodic updates. Retaining only `NAICS_2022_6` and `SOC_2021_4` ensures we use the most recent classification standards. Moreover, older codes are redundant and may lead to inconsistencies in trend analysis.  \n",
+        "- **Tracking data and URLs (e.g., `ID`, `DUPLICATES`).**  \n",
+        "These columns related to data collection timestamps, unique identifiers, or internal system references, which do not contribute to meaningful insights about the job market. Similarly, URLs are not necessary for our analysis as they do not provide any additional value or context but add unnecessary complexity to the dataset.\n",
+        "\n",
+        "### Why removing multiple versions of NAICS/SOC codes?\n",
+        "There are some reasons for this. Firstly, keeping only the latest industry and occupation classifications ensures our analysis reflects the most recent classification standards and avoid confusion and inconsistencies in classification. Additionally, reducing unnecessary columns speeds up data processing and enhances readability. This is particularly important when working with large datasets, as it minimizes the risk of errors and improves the efficiency of our analysis. Finally, it helps to focus on the most relevant information, allowing for clearer insights and conclusions regarding job market trends.\n",
+        "\n",
+        "### Impact on Analysis:\n",
+        "By removing outdated and irrelevant columns, we achieve:  \n",
+        "- More accurate job market trends, focusing on meaningful variables.  \n",
+        "- Easier interpretation without clutter from redundant or technical fields.  \n",
+        "- Faster analysis and visualization, improving overall efficiency.  "
+      ],
+      "id": "5efb5de6"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "job_postings = pd.read_csv('lightcast_job_postings.csv')"
+      ],
+      "id": "67c248c0",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "columns_to_drop = [\n",
+        "    \"ID\", \"URL\", \"ACTIVE_URLS\", \"DUPLICATES\", \"LAST_UPDATED_TIMESTAMP\", \"ACTIVE_URLS\", \"TITLE\", \"COMPANY\",\n",
+        "    \"MSA\", \"STATE\", \"COUNTY\", \"CITY\", \"COUNTY_OUTGOING\", \"COUNTY_INCOMING\", \"MSA_OUTGOING\", \"MSA_INCOMING\",\n",
+        "    \"ONET\", \"ONET_2019\", \"CIP2\", \"CIP4\", \"CIP6\", \"MODELED_DURATION\", \"MODELED_EXPIRED\",\n",
+        "    \"CERTIFICATIONS\", \"COMMON_SKILLS\", \"SPECIALIZED_SKILLS\", \"SKILLS\", \"SOFTWARE_SKILLS\",\n",
+        "    \"LOT_V6_CAREER_AREA\", \"LOT_V6_OCCUPATION_GROUP\", \"LOT_V6_OCCUPATION\", \"LOT_V6_SPECIALIZED_OCCUPATION\",\n",
+        "    \"LOT_OCCUPATION_GROUP\", \"LOT_SPECIALIZED_OCCUPATION\", \"LOT_OCCUPATION\", \"LOT_CAREER_AREA\",\n",
+        "    \"NAICS2\", \"NAICS2_NAME\", \"NAICS3\", \"NAICS3_NAME\", \"NAICS4\", \"NAICS4_NAME\", \"NAICS5\", \"NAICS5_NAME\", \"NAICS6\",\n",
+        "    \"NAICS_2022_2\", \"NAICS_2022_2_NAME\", \"NAICS_2022_3\", \"NAICS_2022_3_NAME\", \"NAICS_2022_4\", \"NAICS_2022_4_NAME\",\n",
+        "    \"NAICS_2022_5\", \"NAICS_2022_5_NAME\", \"NAICS_2022_6\",\n",
+        "    \"SOC_2\", \"SOC_2_NAME\", \"SOC_3\", \"SOC_3_NAME\", \"SOC_5\", \"SOC_5_NAME\", \"SOC_4\",\n",
+        "    \"SOC_2021_2\", \"SOC_2021_2_NAME\", \"SOC_2021_3\", \"SOC_2021_3_NAME\", \"SOC_2021_5\", \"SOC_2021_5_NAME\", \"SOC_2021_4\"\n",
+        "]\n",
+        "\n",
+        "job_postings.drop(columns = columns_to_drop, inplace = True)"
+      ],
+      "id": "f13aefc9",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Handling Missing Values\n",
+        "### We used different strategies for missing values:"
+      ],
+      "id": "c6ec42d7"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(8, 6))\n",
+        "msno.heatmap(job_postings)\n",
+        "plt.title(\"Missing Values Heatmap\")\n",
+        "plt.show()"
+      ],
+      "id": "cd522592",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "#### Dealing with the Salary Column\n",
+        "The `SALARY` column has a significant number of missing values. To handle this, we replaced the missing values with the median salary for that specific title or industry. This approach is effective because it minimizes the impact of outliers and provides a more accurate representation of the typical salary for each job title."
+      ],
+      "id": "97508c1b"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "title_median_salary = job_postings.groupby('TITLE_NAME')['SALARY'].median()\n",
+        "industry_median_salary = job_postings.groupby('NAICS_2022_6_NAME')['SALARY'].median()"
+      ],
+      "id": "f4992118",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "job_postings['SALARY'] = job_postings.apply(\n",
+        "    lambda row: title_median_salary[row['TITLE_NAME']]\n",
+        "    if pd.isna(row['SALARY']) and row['TITLE_NAME'] in title_median_salary else row['SALARY'], \n",
+        "    axis=1\n",
+        ")"
+      ],
+      "id": "a108f14e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "job_postings['SALARY'] = job_postings.apply(\n",
+        "    lambda row: industry_median_salary[row['NAICS_2022_6_NAME']]\n",
+        "    if pd.isna(row['SALARY']) and row['NAICS_2022_6_NAME'] in industry_median_salary else row['SALARY'], \n",
+        "    axis=1\n",
+        ")"
+      ],
+      "id": "3a3e4c9a",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "job_postings['SALARY'] = job_postings['SALARY'].fillna(job_postings[\"SALARY\"].median())"
+      ],
+      "id": "485b99a7",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "#### Dealing with Columns with >50% missing values\n",
+        "Dealing with columns that have more than 50% missing values is crucial for maintaining the integrity of our dataset. Columns with excessive missing data can introduce bias and reduce the reliability of our analysis. Therefore, we removed any columns that exceed this threshold. This ensures that our dataset remains focused on relevant and reliable information, enhancing the quality of our insights."
+      ],
+      "id": "5a2b4245"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "job_postings.dropna(thresh = len(job_postings) * 0.5, axis = 1, inplace = True)"
+      ],
+      "id": "73e6f6d8",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "#### Dealing with Categorical fields\n",
+        "Categorical fields, such as `TITLE_RAW`, were filled with \"Unknown\" for missing values. This approach allows us to retain the integrity of the dataset without introducing bias from arbitrary values. By labeling missing categorical data as \"Unknown\", we can still analyze trends without losing valuable information."
+      ],
+      "id": "c5fb000e"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "job_postings['TITLE_RAW'] = job_postings['TITLE_RAW'].fillna(\"Unknown\")\n",
+        "job_postings['TITLE_CLEAN'] = job_postings['TITLE_CLEAN'].fillna(\"Unknown\")\n",
+        "job_postings['COMPANY_RAW'] = job_postings['COMPANY_RAW'].fillna(\"Unknown\")\n",
+        "job_postings['MSA_NAME'] = job_postings['MSA_NAME'].fillna(\"Unknown\")\n",
+        "job_postings['MSA_NAME_OUTGOING'] = job_postings['MSA_NAME_OUTGOING'].fillna(\"Unknown\")\n",
+        "job_postings['MSA_NAME_INCOMING'] = job_postings['MSA_NAME_INCOMING'].fillna(\"Unknown\")"
+      ],
+      "id": "3ca3a849",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "#### Dealing with Datetime fields\n",
+        "For the `EXPIRED` variable, we chose to fill the missing values with the maximum date from this column. We assumed that the missing value here is because the post has not expired yet. By using the maximum date, we can effectively handle missing values without introducing bias or skewing the results."
+      ],
+      "id": "f05c34e7"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "job_postings['POSTED'] = pd.to_datetime(job_postings['POSTED'])\n",
+        "job_postings['EXPIRED'] = pd.to_datetime(job_postings['EXPIRED'])"
+      ],
+      "id": "15c3cc94",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "max_expired_date = job_postings['EXPIRED'].max()\n",
+        "job_postings['EXPIRED'] = job_postings['EXPIRED'].fillna(max_expired_date)"
+      ],
+      "id": "d079cbba",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "#### Dealing with Numerical fields\n",
+        "For the `MIN_YEARS_EXPERIENCE` variable, we chose to fill the missing values with the median `MIN_YEARS_EXPERIENCE` for a specific title or industry, similar to how we did with the `SALARY` variable. This can minimize the impact of outliers and provides a more accurate representation of the typical years of experience required for each job title."
+      ],
+      "id": "f177a42c"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "title_median_exp = job_postings.groupby('TITLE_NAME')['MIN_YEARS_EXPERIENCE'].median()\n",
+        "industry_median_exp = job_postings.groupby('NAICS_2022_6_NAME')['MIN_YEARS_EXPERIENCE'].median()"
+      ],
+      "id": "edd31b2e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "job_postings['MIN_YEARS_EXPERIENCE'] = job_postings.apply(\n",
+        "    lambda row: title_median_exp[row['TITLE_NAME']]\n",
+        "    if pd.isna(row['MIN_YEARS_EXPERIENCE']) and row['TITLE_NAME'] in title_median_exp else row['MIN_YEARS_EXPERIENCE'], \n",
+        "    axis=1\n",
+        ")"
+      ],
+      "id": "d2c8f811",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "job_postings['MIN_YEARS_EXPERIENCE'] = job_postings.apply(\n",
+        "    lambda row: industry_median_exp[row['NAICS_2022_6_NAME']]\n",
+        "    if pd.isna(row['MIN_YEARS_EXPERIENCE']) and row['NAICS_2022_6_NAME'] in industry_median_exp else row['MIN_YEARS_EXPERIENCE'], \n",
+        "    axis=1\n",
+        ")"
+      ],
+      "id": "64e201ba",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "job_postings['MIN_YEARS_EXPERIENCE'] = job_postings['MIN_YEARS_EXPERIENCE'].fillna(job_postings[\"MIN_YEARS_EXPERIENCE\"].median())"
+      ],
+      "id": "08da43d9",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "`DURATION` variable is also a numerical field, but it has a different approach. We will fill the missing values with the difference between the `POSTED` and `EXPIRED`, which calculates the actual time span based on the available dates."
+      ],
+      "id": "00eae6d3"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "def impute_duration(cols):\n",
+        "    posted = cols.iloc[0]\n",
+        "    expired = cols.iloc[1]\n",
+        "    duration = cols.iloc[2]\n",
+        "\n",
+        "    if pd.isnull(duration):\n",
+        "        return expired - posted\n",
+        "    else: \n",
+        "        return duration"
+      ],
+      "id": "850c94ee",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "job_postings['DURATION'] = job_postings[['POSTED', 'EXPIRED', 'DURATION']].apply(impute_duration, axis = 1)"
+      ],
+      "id": "ad98881a",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Removing Duplicate Job Postings\n",
+        "\n",
+        "### To ensure each job is counted only once, we removed duplicates based on job title, company, location, and posting date."
+      ],
+      "id": "80decf6f"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "job_postings = job_postings.drop_duplicates(subset=[\"TITLE_NAME\", \"COMPANY_NAME\", \"LOCATION\", \"POSTED\"], keep = \"first\")"
+      ],
+      "id": "f258f2be",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "job_postings.to_csv('job_postings_cleaned.csv', index=False)"
+      ],
+      "id": "492dfc7c",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# **Exploratory Data Analysis (EDA)**\n",
+        "\n",
+        "## Top 20 companies by job postings"
+      ],
+      "id": "7f83fcf0"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "scrolled": false
+      },
+      "source": [
+        "filtered_companies = job_postings[job_postings[\"COMPANY_NAME\"] != \"Unclassified\"]\n",
+        "\n",
+        "top_companies = filtered_companies[\"COMPANY_NAME\"].value_counts().head(20)\n",
+        "\n",
+        "fig = px.bar(\n",
+        "    x=top_companies.values,\n",
+        "    y=top_companies.index,\n",
+        "    orientation='h',\n",
+        "    title=\"Top 20 Companies by Job Postings (Excluding Unclassified)\",\n",
+        "    labels={'x': 'Number of Job Postings', 'y': 'Company Name'},\n",
+        "    text=top_companies.values\n",
+        ")\n",
+        "\n",
+        "fig.update_layout(\n",
+        "    xaxis_title=\"Number of Job Postings\",\n",
+        "    yaxis_title=\"Company\",\n",
+        "    yaxis={'categoryorder': 'total ascending'}, \n",
+        "    height=600, \n",
+        "    width=900\n",
+        ")\n",
+        "\n",
+        "fig.show()"
+      ],
+      "id": "680fffd5",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "The visualization of the top 20 companies by job postings (excluding \"Unclassified\") highlights key trends in the job market, particularly in the increasing demand for AI-related roles. Many of the companies with the most postings—Deloitte, Accenture, PricewaterhouseCoopers (PwC), Oracle, Infosys, Meta, and CDW—are major players in technology, consulting, and digital transformation, sectors that have been heavily investing in AI, machine learning, and data-driven innovation.\n",
+        "\n",
+        "The dominance of these companies in job postings suggests that careers in AI and technology-related fields are in high demand. Consulting giants like Deloitte, Accenture, PwC, and KPMG are actively expanding their AI divisions, helping businesses integrate AI into their operations. For instance, Deloitte has launched several AI tools, including chatbots like \"DARTbot\" for audit professionals and \"NavigAite\" for document review, to enhance efficiency and client services (Stokes, 2025). Additionally, companies like Meta are pioneers in AI research, focusing on areas such as generative AI, automation, and data science. Even in non-tech sectors, financial and healthcare firms such as Citigroup, Cardinal Health, and Blue Cross Blue Shield are leveraging AI for fraud detection, risk assessment, and personalized healthcare.\n",
+        "\n",
+        "These trends indicate that pursuing a career in AI-related fields, such as data science, machine learning engineering, and AI research, could provide greater job opportunities and higher earning potential. The strong presence of technology and consulting firms in job postings reflects how AI is becoming a fundamental part of business strategies across industries. While traditional, non-AI careers will continue to exist, the rapid push toward automation and intelligent systems suggests that AI-related skills will be increasingly valuable in both technical and non-technical roles. As industries continue adopting AI, professionals who develop expertise in this area may have a competitive advantage in the evolving job market.\n",
+        "\n",
+        "## Salary Distribution by Industry"
+      ],
+      "id": "45bd754a"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "fig = px.box(job_postings, x=\"NAICS_2022_6_NAME\", y=\"SALARY\", title=\"Salary Distribution by Industry\")\n",
+        "fig.update_layout(width=1200, height=1000)\n",
+        "fig.show()"
+      ],
+      "id": "001931ef",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "The box plot provides a clearer view of salary distributions across industries, highlighting variations in median salaries and outliers. Most industries exhibit salary concentrations below \\$200K, with some sectors showing significantly higher outliers above \\$300K-\\$500K, suggesting high-paying roles in specialized fields.\n",
+        "\n",
+        "AI-related jobs, typically found in industries such as technology, finance, and advanced manufacturing, often contribute to these high-salary outliers. Roles in machine learning, data science, and artificial intelligence engineering command premium salaries due to their specialized skill requirements, talent scarcity, and high demand across multiple industries. The broader salary spread in AI-intensive fields may also reflect differences in job seniority, from entry-level analysts to highly compensated AI researchers and executives.\n",
+        "\n",
+        "Additionally, AI-driven industries tend to offer competitive compensation to attract top talent, given the rapid pace of technological advancement and the strategic importance of AI in business growth. The dense clustering of lower salaries in non-AI industries indicates a more constrained range, potentially due to standardized pay structures or lower technical barriers to entry. \n",
+        "\n",
+        "## Top 5 Occupations by Average Salary"
+      ],
+      "id": "17b232a8"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "avg_salary_per_occupation = job_postings.groupby(\"LOT_V6_OCCUPATION_NAME\")[\"SALARY\"].mean().reset_index()\n",
+        "\n",
+        "top_occupations = avg_salary_per_occupation.sort_values(by=\"SALARY\", ascending=False).head(5)\n",
+        "\n",
+        "fig = px.bar(\n",
+        "        top_occupations,\n",
+        "        x=\"SALARY\",\n",
+        "        y=\"LOT_V6_OCCUPATION_NAME\",\n",
+        "        orientation='h',\n",
+        "        title=\"Top 5 Occupations by Average Salary\",\n",
+        "        labels={\"SALARY\": \"Average Salary ($)\", \"LOT_V6_OCCUPATION_NAME\": \"Occupation\"},\n",
+        "        text=top_occupations[\"SALARY\"]\n",
+        "    )\n",
+        "\n",
+        "fig.update_layout(\n",
+        "        xaxis_title=\"Average Salary ($)\",\n",
+        "        yaxis_title=\"Occupation\",\n",
+        "        yaxis={\"categoryorder\": \"total ascending\"}, \n",
+        "        height=700,\n",
+        "        width=900\n",
+        "    )\n",
+        "\n",
+        "fig.show()"
+      ],
+      "id": "cc0fe6c6",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "raw",
+      "metadata": {},
+      "source": [
+        "The salary distribution in the graph clearly shows that the highest-paying occupations are directly tied to artificial intelligence, data analytics, and business intelligence. The top-paying role, \"Computer Systems Engineer / Architect,\" averages over \\$156,000, followed by \"Business Intelligence Analyst\" at \\$125,000 and other AI-driven roles like \"Data Mining Analyst\" and \"Market Research Analyst,\" all exceeding \\$100,000. These occupations rely heavily on AI, machine learning, and data-driven decision-making, making it clear that mastering AI-related skills is directly linked to higher salaries. The strong earnings for these roles indicate that industries are willing to pay a premium for professionals who can build, interpret, and optimize AI-driven systems.\n",
+        "\n",
+        "In contrast, traditional non-AI careers, which are not as data or automation-focused, tend to fall outside these top salary brackets. The job market is shifting towards AI dependency, where knowing how to work with artificial intelligence, big data, and automation tools is no longer just an advantage but a necessity for higher-paying opportunities. As industries integrate AI at an increasing pace, professionals who fail to develop AI-related expertise risk stagnating in lower-paying roles, while those who embrace AI technologies position themselves for significantly better financial rewards.\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "# Exploratory Data Analysis (EDA)\n",
+        "\n",
+        "---"
+      ],
+      "id": "fb5c4827"
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "title: Exploratory Data Analysis\n",
+        "subtitle: Enhance EDA with Improved Visualizations and Deeper Insights\n",
+        "author:\n",
+        "  - name: Furong Wang\n",
+        "    affiliations:\n",
+        "      - id: bu\n",
+        "        name: Boston University\n",
+        "        city: Boston\n",
+        "        state: MA\n",
+        "  - name: Marco Perez Garcia\n",
+        "    affiliations:\n",
+        "      - ref: bu\n",
+        "bibliography: references.bib\n",
+        "csl: csl/econometrica.csl\n",
+        "format:\n",
+        "  html:\n",
+        "    toc: true\n",
+        "    number-sections: true\n",
+        "    df-print: paged\n",
+        "jupyter: python3\n",
+        "---"
+      ],
+      "id": "b6709b61"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import pandas as pd\n",
+        "import numpy as np\n",
+        "import matplotlib.pyplot as plt\n",
+        "import seaborn as sns\n",
+        "import missingno as msno\n",
+        "import plotly.express as px"
+      ],
+      "id": "a042f985",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "job_postings = pd.read_csv('job_postings_cleaned.csv')"
+      ],
+      "id": "bfcc9e6a",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# **Exploratory Data Analysis & Visualization**"
+      ],
+      "id": "25c3454b"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plotly_layout = dict(\n",
+        "    font=dict(family=\"Arial\", size=14),\n",
+        "    title_font=dict(size=20, family=\"Arial\", color=\"black\"),\n",
+        "    paper_bgcolor=\"white\",\n",
+        "    plot_bgcolor=\"white\",\n",
+        "    margin=dict(t=60, l=60, r=30, b=60),\n",
+        "    legend=dict(bordercolor=\"lightgray\", borderwidth=1),\n",
+        "    xaxis=dict(\n",
+        "        title_font=dict(size=16, color=\"black\"),  \n",
+        "        tickfont=dict(size=12, color=\"black\"),    \n",
+        "        showgrid=True, \n",
+        "        gridcolor=\"lightgray\",\n",
+        "        showline=True,\n",
+        "        linecolor=\"black\",\n",
+        "        linewidth=1,\n",
+        "        mirror=True,\n",
+        "        zeroline=True,\n",
+        "        zerolinecolor=\"gray\",\n",
+        "        zerolinewidth=1\n",
+        "    ),\n",
+        "    yaxis=dict(\n",
+        "        title_font=dict(size=16, color=\"black\"),  \n",
+        "        tickfont=dict(size=12, color=\"black\"),    \n",
+        "        showgrid=True, \n",
+        "        gridcolor=\"lightgray\",\n",
+        "        showline=True,\n",
+        "        linecolor=\"black\",\n",
+        "        linewidth=1,\n",
+        "        mirror=True,\n",
+        "        zeroline=True,\n",
+        "        zerolinecolor=\"gray\",\n",
+        "        zerolinewidth=1\n",
+        "    ),\n",
+        ")"
+      ],
+      "id": "1a44041e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Top 20 companies by job postings"
+      ],
+      "id": "97fc71ee"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "scrolled": false
+      },
+      "source": [
+        "filtered_companies = job_postings[job_postings[\"COMPANY_NAME\"] != \"Unclassified\"]\n",
+        "\n",
+        "top_companies = filtered_companies[\"COMPANY_NAME\"].value_counts().head(20)\n",
+        "\n",
+        "fig = px.bar(\n",
+        "    x=top_companies.values,\n",
+        "    y=top_companies.index,\n",
+        "    orientation='h',\n",
+        "    title=\"Top 20 Companies by Job Postings (Excluding Unclassified)\",\n",
+        "    labels={'x': 'Number of Job Postings', 'y': 'Company Name'},\n",
+        "    text=top_companies.values\n",
+        ")\n",
+        "\n",
+        "fig.update_layout(\n",
+        "    xaxis_title=\"Number of Job Postings\",\n",
+        "    yaxis_title=\"Company\",\n",
+        "    yaxis={'categoryorder': 'total ascending'}, \n",
+        "    height=600, \n",
+        "    width=900\n",
+        ")\n",
+        "\n",
+        "fig.update_layout(**plotly_layout) \n",
+        "fig.show()"
+      ],
+      "id": "18af89c3",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "The visualization of the top 20 companies by job postings (excluding \"Unclassified\") highlights key trends in the job market, particularly in the increasing demand for AI-related roles. Many of the companies with the most postings—Deloitte, Accenture, PricewaterhouseCoopers (PwC), Oracle, Infosys, Meta, and CDW—are major players in technology, consulting, and digital transformation, sectors that have been heavily investing in AI, machine learning, and data-driven innovation.\n",
+        "\n",
+        "The dominance of these companies in job postings suggests that careers in AI and technology-related fields are in high demand. Consulting giants like Deloitte, Accenture, PwC, and KPMG are actively expanding their AI divisions, helping businesses integrate AI into their operations. For instance, Deloitte has launched several AI tools, including chatbots like \"DARTbot\" for audit professionals and \"NavigAite\" for document review, to enhance efficiency and client services (Stokes, 2025). Additionally, companies like Meta are pioneers in AI research, focusing on areas such as generative AI, automation, and data science. Even in non-tech sectors, financial and healthcare firms such as Citigroup, Cardinal Health, and Blue Cross Blue Shield are leveraging AI for fraud detection, risk assessment, and personalized healthcare.\n",
+        "\n",
+        "These trends indicate that pursuing a career in AI-related fields, such as data science, machine learning engineering, and AI research, could provide greater job opportunities and higher earning potential. The strong presence of technology and consulting firms in job postings reflects how AI is becoming a fundamental part of business strategies across industries. While traditional, non-AI careers will continue to exist, the rapid push toward automation and intelligent systems suggests that AI-related skills will be increasingly valuable in both technical and non-technical roles. As industries continue adopting AI, professionals who develop expertise in this area may have a competitive advantage in the evolving job market.\n",
+        "\n",
+        "## Salary Distribution by Industry"
+      ],
+      "id": "d47619ff"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "fig = px.box(job_postings, x=\"NAICS_2022_6_NAME\", y=\"SALARY\", title=\"Salary Distribution by Industry\")\n",
+        "fig.update_layout(width=1200, height=1000)\n",
+        "fig.update_layout(**plotly_layout)\n",
+        "fig.show()"
+      ],
+      "id": "4964b1c6",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "The box plot provides a clearer view of salary distributions across industries, highlighting variations in median salaries and outliers. Most industries exhibit salary concentrations below \\$200K, with some sectors showing significantly higher outliers above \\$300K-\\$500K, suggesting high-paying roles in specialized fields.\n",
+        "\n",
+        "AI-related jobs, typically found in industries such as technology, finance, and advanced manufacturing, often contribute to these high-salary outliers. Roles in machine learning, data science, and artificial intelligence engineering command premium salaries due to their specialized skill requirements, talent scarcity, and high demand across multiple industries. The broader salary spread in AI-intensive fields may also reflect differences in job seniority, from entry-level analysts to highly compensated AI researchers and executives.\n",
+        "\n",
+        "Additionally, AI-driven industries tend to offer competitive compensation to attract top talent, given the rapid pace of technological advancement and the strategic importance of AI in business growth. The dense clustering of lower salaries in non-AI industries indicates a more constrained range, potentially due to standardized pay structures or lower technical barriers to entry. \n",
+        "\n",
+        "## Top 5 Occupations by Average Salary"
+      ],
+      "id": "438ba8dd"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "avg_salary_per_occupation = job_postings.groupby(\"LOT_V6_OCCUPATION_NAME\")[\"SALARY\"].mean().reset_index()\n",
+        "\n",
+        "top_occupations = avg_salary_per_occupation.sort_values(by=\"SALARY\", ascending=False).head(5)\n",
+        "\n",
+        "fig = px.bar(\n",
+        "        top_occupations,\n",
+        "        x=\"SALARY\",\n",
+        "        y=\"LOT_V6_OCCUPATION_NAME\",\n",
+        "        orientation='h',\n",
+        "        title=\"Top 5 Occupations by Average Salary\",\n",
+        "        labels={\"SALARY\": \"Average Salary ($)\", \"LOT_V6_OCCUPATION_NAME\": \"Occupation\"},\n",
+        "        text=top_occupations[\"SALARY\"]\n",
+        "    )\n",
+        "\n",
+        "fig.update_layout(\n",
+        "        xaxis_title=\"Average Salary ($)\",\n",
+        "        yaxis_title=\"Occupation\",\n",
+        "        yaxis={\"categoryorder\": \"total ascending\"}, \n",
+        "        height=700,\n",
+        "        width=900\n",
+        "    )\n",
+        "\n",
+        "fig.update_layout(**plotly_layout)\n",
+        "fig.show()"
+      ],
+      "id": "a9269898",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "The salary distribution in the graph clearly shows that the highest-paying occupations are directly tied to artificial intelligence, data analytics, and business intelligence. The top-paying role, \"Computer Systems Engineer / Architect,\" averages over \\$156,000, followed by \"Business Intelligence Analyst\" at \\$125,000 and other AI-driven roles like \"Data Mining Analyst\" and \"Market Research Analyst,\" all exceeding \\$100,000. These occupations rely heavily on AI, machine learning, and data-driven decision-making, making it clear that mastering AI-related skills is directly linked to higher salaries. The strong earnings for these roles indicate that industries are willing to pay a premium for professionals who can build, interpret, and optimize AI-driven systems.\n",
+        "\n",
+        "In contrast, traditional non-AI careers, which are not as data or automation-focused, tend to fall outside these top salary brackets. The job market is shifting towards AI dependency, where knowing how to work with artificial intelligence, big data, and automation tools is no longer just an advantage but a necessity for higher-paying opportunities. As industries integrate AI at an increasing pace, professionals who fail to develop AI-related expertise risk stagnating in lower-paying roles, while those who embrace AI technologies position themselves for significantly better financial rewards.\n",
+        "\n",
+        "## **Enhanced Visualizations**\n",
+        "\n",
+        "## Job Postings Trend Over Time (Top Companies)"
+      ],
+      "id": "98998f07"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "job_postings['POSTED'] = pd.to_datetime(job_postings['POSTED'])\n",
+        "top_companies = (\n",
+        "    job_postings[job_postings[\"COMPANY_NAME\"] != \"Unclassified\"][\"COMPANY_NAME\"]\n",
+        "    .value_counts()\n",
+        "    .head(10)\n",
+        "    .index\n",
+        ")\n",
+        "\n",
+        "filtered = job_postings[job_postings['COMPANY_NAME'].isin(top_companies)]\n",
+        "\n",
+        "trend = (\n",
+        "    filtered.groupby([filtered['POSTED'].dt.to_period('M'), 'COMPANY_NAME'])\n",
+        "    .size()\n",
+        "    .reset_index(name='Postings')\n",
+        ")\n",
+        "trend['POSTED'] = trend['POSTED'].dt.to_timestamp()\n",
+        "\n",
+        "fig = px.line(trend, x='POSTED', y='Postings', color='COMPANY_NAME',\n",
+        "              title='Monthly Job Postings for Top 10 Companies')\n",
+        "fig.update_layout(**plotly_layout)\n",
+        "fig.show()"
+      ],
+      "id": "7780f05b",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "The line chart above reveals dynamic shifts in job posting activity among the top 10 hiring companies over recent months. Several key patterns emerge:\n",
+        "\n",
+        "- Infosys shows a strong upward trend, indicating a possible expansion phase or increased demand for tech-related talent. This could reflect growing project loads or client demand in IT services and consulting.\n",
+        "\n",
+        "- Accenture and Deloitte maintain relatively stable posting volumes, suggesting consistent hiring pipelines. This stability aligns with their roles as global consulting giants with ongoing needs for specialized talent in digital transformation, data analytics, and strategy.\n",
+        "\n",
+        "- Humana and Insight Global exhibit moderate declines followed by slight recoveries, potentially pointing to seasonal or project-based hiring fluctuations in healthcare and staffing services.\n",
+        "\n",
+        "- Companies like KPMG, Oracle, and PricewaterhouseCoopers (PwC) show lower and flatter posting trends, possibly indicating a more conservative hiring approach or specific recruitment periods during the year.\n",
+        "\n",
+        "- Merit America, a nonprofit focused on career advancement, remains on the lower end of the spectrum. However, its presence in the top 10 indicates consistent demand in educational or workforce development roles.\n",
+        "\n",
+        "Overall, the chart highlights Infosys as a standout, with its consistent rise suggesting aggressive recruitment. In contrast, other firms maintain steady or slightly fluctuating volumes, reflecting industry-specific hiring cycles. This trend-based view can be valuable for job seekers, workforce planners, or analysts studying labor market activity in the consulting, healthcare, tech, and staffing sectors.\n",
+        "\n",
+        "## Salary Distribution by Industry (Filtered Outliers)"
+      ],
+      "id": "55ba367a"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "Q1 = job_postings['SALARY'].quantile(0.25)\n",
+        "Q3 = job_postings['SALARY'].quantile(0.75)\n",
+        "IQR = Q3 - Q1\n",
+        "\n",
+        "filtered_salaries = job_postings[\n",
+        "    (job_postings['SALARY'] >= Q1 - 1.5*IQR) & \n",
+        "    (job_postings['SALARY'] <= Q3 + 1.5*IQR)\n",
+        "]\n",
+        "\n",
+        "fig = px.box(filtered_salaries, x=\"NAICS_2022_6_NAME\", y=\"SALARY\", \n",
+        "             title=\"Filtered Salary Distribution by Industry\")\n",
+        "fig.update_layout(width=1200, height=800, xaxis_tickangle=45)\n",
+        "fig.update_layout(**plotly_layout)\n",
+        "fig.show()"
+      ],
+      "id": "b0973b2e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "The box plot above provides a cleaned and focused view of salary distributions across different industries, with extreme outliers removed to highlight more meaningful central trends.\n",
+        "\n",
+        "- High variation across industries: Some industries display a narrow salary band, suggesting standardized roles (e.g., Retail or Administrative sectors), while others—especially in tech, consulting, and finance—show wider spreads, indicating diverse job levels and pay scales.\n",
+        "\n",
+        "- Technology and data-driven sectors (e.g., Computer Systems Design, Custom Software Development) tend to cluster toward the higher end of the salary spectrum, reflecting the premium placed on digital skills, AI, and advanced analytics.\n",
+        "\n",
+        "- Healthcare and scientific industries also show strong mid-to-upper ranges, hinting at specialized roles that demand advanced education or certifications.\n",
+        "\n",
+        "- In contrast, industries like Warehousing, Food Services, and Retail generally reflect lower median salaries, consistent with roles requiring less formal education or technical expertise.\n",
+        "\n",
+        "This visualization emphasizes how industry selection can significantly impact earning potential, even before considering role or experience level. For job seekers or workforce planners, it provides a valuable benchmark when evaluating career paths or advising on industry transitions.\n",
+        "\n",
+        "## Fastest-Growing Industries Over Time"
+      ],
+      "id": "afa018f0"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "monthly_industry = (\n",
+        "    job_postings.groupby([job_postings['POSTED'].dt.to_period(\"M\"), \"NAICS_2022_6_NAME\"])\n",
+        "    .size()\n",
+        "    .reset_index(name='Postings')\n",
+        ")\n",
+        "monthly_industry[\"POSTED\"] = monthly_industry[\"POSTED\"].dt.to_timestamp()\n",
+        "\n",
+        "top_industries = monthly_industry.groupby(\"NAICS_2022_6_NAME\")[\"Postings\"].sum().nlargest(6).index\n",
+        "\n",
+        "top_industries = [industry for industry in top_industries if industry != \"Unclassified Industry\"]\n",
+        "\n",
+        "filtered_growth = monthly_industry[monthly_industry[\"NAICS_2022_6_NAME\"].isin(top_industries)]\n",
+        "\n",
+        "fig = px.line(filtered_growth, x=\"POSTED\", y=\"Postings\", color=\"NAICS_2022_6_NAME\",\n",
+        "              title=\"Top 5 Industries by Job Postings Over Time (Excluding Unclassified)\")\n",
+        "fig.update_layout(**plotly_layout)\n",
+        "fig.show()"
+      ],
+      "id": "03947ebb",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "This line plot presents job posting trends across the top five industries (excluding unclassified roles), offering a clearer picture of sector-specific hiring momentum over the past several months.\n",
+        "\n",
+        "- Employment Placement Agencies show the most significant increase in job postings, suggesting a surge in demand for staffing services. This could reflect broader labor market activity, such as rising contract work, workforce mobility, or seasonal hiring cycles.\n",
+        "\n",
+        "- Administrative Management and Consulting Services maintain consistently high levels of postings, highlighting the ongoing demand for business strategy, operations, and project management talent. The slight upward trend may align with businesses seeking advisory support during periods of uncertainty or transformation.\n",
+        "\n",
+        "- Computer Systems Design Services and Custom Computer Programming Services demonstrate steady hiring activity, reinforcing the continued need for tech infrastructure, custom software development, and IT support roles across industries.\n",
+        "\n",
+        "- Commercial Banking, while slightly more volatile, remains a key hiring industry. This might reflect fluctuations in financial service needs, regulatory adjustments, or regional economic conditions.\n",
+        "\n",
+        "Overall, the chart illustrates that technology, consulting, staffing, and finance remain dominant hiring sectors — with tech-related industries showing stable demand and staffing services accelerating most rapidly. These insights are valuable for job seekers targeting high-opportunity industries, and for workforce planners aiming to align talent strategies with real-time market shifts.\n",
+        "\n",
+        "## Salary Trends Over Time for Top 5 Occupations"
+      ],
+      "id": "b0afcc4a"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "job_postings['POSTED'] = pd.to_datetime(job_postings['POSTED'])\n",
+        "top_occ = job_postings['LOT_V6_OCCUPATION_NAME'].value_counts().head(5).index\n",
+        "\n",
+        "filtered_jobs = job_postings[job_postings['LOT_V6_OCCUPATION_NAME'].isin(top_occ)]\n",
+        "filtered_jobs['Month'] = filtered_jobs['POSTED'].dt.to_period(\"M\").dt.to_timestamp()\n",
+        "\n",
+        "salary_trend = (\n",
+        "    filtered_jobs.groupby(['Month', 'LOT_V6_OCCUPATION_NAME'])['SALARY']\n",
+        "    .mean().reset_index()\n",
+        ")\n",
+        "\n",
+        "fig = px.line(salary_trend, \n",
+        "              x=\"Month\", \n",
+        "              y=\"SALARY\", \n",
+        "              color=\"LOT_V6_OCCUPATION_NAME\",\n",
+        "              title=\"Average Salary Trends Over Time for Top 5 Occupations\")\n",
+        "fig.update_layout(**plotly_layout)\n",
+        "fig.show()"
+      ],
+      "id": "3de76ecf",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "The line chart illustrates average salary trends over time for the top five most frequently posted occupations. A few meaningful patterns emerge:\n",
+        "\n",
+        "- Computer Systems Engineer / Architect consistently ranks as the highest-paid occupation, maintaining an average salary around or above $150,000. This reflects the strong demand for highly skilled professionals in systems architecture, a field that supports infrastructure in both legacy enterprises and cloud-native environments.\n",
+        "\n",
+        "- Data / Data Mining Analysts and Business Intelligence Analysts both show stable and competitive salaries in the range of ~$120,000–$130,000. These roles are closely tied to data-driven decision-making, reflecting how AI and analytics continue to shape business strategy and operations.\n",
+        "\n",
+        "- Clinical Analysts / Clinical Documentation Specialists demonstrate slightly lower salary levels but remain relatively consistent, indicating steady demand in the healthcare and life sciences sectors—often associated with electronic health records, compliance, and process optimization.\n",
+        "\n",
+        "- Business / Management Analysts show moderate but stable pay, aligning with generalist consulting and strategic support functions. While their salaries are slightly below the technical roles, they still remain above the $100,000 mark.\n",
+        "\n",
+        "Overall, this plot reinforces the idea that technical and analytical occupations—especially those connected to data, engineering, and system-level design—continue to command premium salaries in the job market. Notably, salary stability across all five roles suggests that these are high-value, high-demand positions, resilient to short-term economic shifts.\n",
+        "\n",
+        "## Average Salary by Employment Type"
+      ],
+      "id": "8382f716"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "avg_salary_by_type = (\n",
+        "    job_postings.groupby(\"EMPLOYMENT_TYPE_NAME\")[\"SALARY\"]\n",
+        "    .mean()\n",
+        "    .sort_values(ascending=False)\n",
+        "    .reset_index()\n",
+        ")\n",
+        "\n",
+        "import plotly.express as px\n",
+        "\n",
+        "fig = px.bar(avg_salary_by_type, \n",
+        "             x=\"EMPLOYMENT_TYPE_NAME\", \n",
+        "             y=\"SALARY\",\n",
+        "             title=\"Average Salary by Employment Type\",\n",
+        "             labels={\"SALARY\": \"Average Salary ($)\", \"EMPLOYMENT_TYPE_NAME\": \"Employment Type\"},\n",
+        "             text=\"SALARY\")\n",
+        "\n",
+        "fig.update_layout(yaxis_tickprefix=\"$\", height=500)\n",
+        "fig.update_layout(**plotly_layout)\n",
+        "fig.show()"
+      ],
+      "id": "9ca0ee2a",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "This bar chart compares the average salaries across different employment types, revealing key patterns in compensation based on job structure:\n",
+        "\n",
+        "- Full-time roles (>32 hours) lead with the highest average salary at approximately $117,324, which aligns with expectations — these positions often come with more responsibilities, benefits, and long-term career opportunities.\n",
+        "\n",
+        "- Part-time / full-time hybrid roles earn slightly less on average (~$104,379), potentially due to inconsistent hours or project-based employment models that offer flexibility but not always the highest compensation.\n",
+        "\n",
+        "- Part-time roles (≤32 hours) average just below $102,000, a surprisingly competitive figure. This could reflect specialized part-time positions (e.g., consultants or contract professionals) that still command high hourly rates despite reduced hours.\n",
+        "\n",
+        "Notably, the relatively narrow gap between employment types suggests that skills and job function may have a stronger influence on salary than hours alone. High-paying part-time and hybrid roles could indicate a shift toward flexible, high-skill labor markets, where experienced professionals negotiate premium pay for reduced workloads.\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "# Skill Gap Analysis"
+      ],
+      "id": "6919f824"
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: Skill Gap Analysis\n",
+        "subtitle: Compare the skills required in IT job postings against the actual skills of your group members to identify knowledge gaps and areas for improvement.\n",
+        "author:\n",
+        "  - name: Furong Wang\n",
+        "    affiliations:\n",
+        "      - id: bu\n",
+        "        name: Boston University\n",
+        "        city: Boston\n",
+        "        state: MA\n",
+        "  - name: Marco Perez Garcia\n",
+        "    affiliations:\n",
+        "      - ref: bu\n",
+        "bibliography: references.bib\n",
+        "csl: csl/econometrica.csl\n",
+        "format:\n",
+        "  html:\n",
+        "    toc: true\n",
+        "    number-sections: true\n",
+        "    df-print: paged\n",
+        "jupyter: python3\n",
+        "---"
+      ],
+      "id": "7523225b"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import pandas as pd\n",
+        "import matplotlib.pyplot as plt\n",
+        "import seaborn as sns\n",
+        "import missingno as msno\n",
+        "from collections import Counter\n",
+        "import json\n",
+        "import ast"
+      ],
+      "id": "70cce4d8",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# **Team-based Skill Dataframe**\n",
+        "\n",
+        "With our chosen IT career path as Business Analysts, we identified our current skills relevant to the role and assessed proficiency levels using a numerical scale from 1 to 5:  \n",
+        "1 = Beginner   \n",
+        "2 = Basic Knowledge   \n",
+        "3 = Intermediate   \n",
+        "4 = Advanced   \n",
+        "5 = Expert  \n",
+        "\n",
+        "The following heatmap visualized our team strengths and gaps."
+      ],
+      "id": "2caaf86e"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "job_postings = pd.read_csv(\"lightcast_job_postings.csv\", low_memory = False)"
+      ],
+      "id": "d14ea6f1",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "team_skills_data = {\n",
+        "    \"Name\": [\"Furong\", \"Marco\"],\n",
+        "    \"R\": [3, 3],\n",
+        "    \"Python\": [3, 4],\n",
+        "    \"SQL\": [2, 3],\n",
+        "    \"Microsoft Excel\": [5, 5],\n",
+        "    \"Data Visulization\": [4, 4],\n",
+        "    \"Amazon Web Services\": [2, 2],\n",
+        "    \"Risk Analytics\": [3, 3],\n",
+        "    \"Data Mining\": [3, 3]\n",
+        "}\n",
+        "\n",
+        "df_team_skills = pd.DataFrame(team_skills_data)\n",
+        "df_team_skills.set_index(\"Name\", inplace = True)"
+      ],
+      "id": "c247ff8f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize = (8, 6))\n",
+        "heatmap = sns.heatmap(df_team_skills, annot = True, cmap = \"YlGnBu\", \n",
+        "                    linewidths = 0.5, fmt = \".1f\", vmin = 1, vmax = 5)\n",
+        "\n",
+        "cbar = heatmap.collections[0].colorbar\n",
+        "cbar.set_ticks([1, 2, 3, 4, 5])\n",
+        "cbar.set_ticklabels(['Beginner', 'Basic', 'Intermediate', 'Advanced', 'Expert'])\n",
+        "\n",
+        "plt.title(\"Team Skill Levels Heatmap\", fontsize = 16)\n",
+        "plt.ylabel(\"Average Proficiency (1-5)\", fontsize = 12)\n",
+        "plt.xlabel(\"Skills\", fontsize = 12)\n",
+        "plt.xticks(rotation = 40, ha = 'right')\n",
+        "plt.yticks(rotation = 0, ha = 'right')\n",
+        "plt.tight_layout()\n",
+        "plt.show()"
+      ],
+      "id": "1d993733",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# **Team Skills vs. Industry Requirements**\n",
+        "\n",
+        "To compare our team’s skills to industry requirements, we identified the most in-demand skills from IT job postings. We focused on the industry group `Computing Infrastructure Providers, Data Processing, Web Hosting, and Related Services`, as it closely aligns with our chosen career path.\n",
+        "\n",
+        "The bar plot below illustrates the top 10 skills most in demand within IT job postings, providing insights into industry expectations."
+      ],
+      "id": "4439c01e"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "it_jobs = job_postings[job_postings['NAICS_2022_6'] == 518210]"
+      ],
+      "id": "eb262d82",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "all_skills = []\n",
+        "\n",
+        "def parse_skills(skills_str):\n",
+        "    try:\n",
+        "        if pd.isna(skills_str):\n",
+        "            return []\n",
+        "        try:\n",
+        "            return json.loads(skills_str)\n",
+        "        except:\n",
+        "            return ast.literal_eval(skills_str)\n",
+        "    except:\n",
+        "        print(f\"Warning: Could not parse skills: {skills_str}\")\n",
+        "        return []\n",
+        "\n",
+        "for skills_str in it_jobs['SKILLS_NAME'].dropna():\n",
+        "    skills_list = parse_skills(skills_str)\n",
+        "    all_skills.extend(skills_list)\n",
+        "\n",
+        "skill_counter = Counter(all_skills)\n",
+        "top_10_skills = skill_counter.most_common(10)\n",
+        "\n",
+        "top_skills_df = pd.DataFrame(top_10_skills, columns = ['Skill', 'Count'])"
+      ],
+      "id": "944e3d75",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "total_postings = len(it_jobs)\n",
+        "top_skills_df['Percentage'] = (top_skills_df['Count'] / total_postings * 100).round(1)\n",
+        "top_skills_df = top_skills_df.sort_values('Count', ascending = False)\n",
+        "\n",
+        "plt.figure(figsize=(10, 6))\n",
+        "sns.barplot(\n",
+        "    x = 'Count', \n",
+        "    y = 'Skill', \n",
+        "    data = top_skills_df,\n",
+        "    hue = 'Skill',\n",
+        "    palette = \"Blues_r\"\n",
+        ")\n",
+        "plt.title(\"Top 10 Skills Required in IT Job Postings\", fontsize = 16)\n",
+        "plt.xlabel(\"Number of Job Postings\", fontsize = 12)\n",
+        "plt.ylabel(\"Skills\", fontsize = 12)\n",
+        "plt.xlim(0, 500) \n",
+        "\n",
+        "for i, row in enumerate(top_skills_df.itertuples()):\n",
+        "    plt.text(\n",
+        "        row.Count + 5, \n",
+        "        i, \n",
+        "        f\"{row.Count} ({row.Percentage}%)\",\n",
+        "        va='center'\n",
+        "    )\n",
+        "\n",
+        "plt.tight_layout()\n",
+        "plt.show()"
+      ],
+      "id": "76f43e91",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "raw",
+      "metadata": {},
+      "source": [
+        "# **Team Skills Improvement Plan**\n",
+        "\n",
+        "The bar plot of the top 10 most in-demand skills from IT job postings underscores the significance of core technical skills such as **Computer Science (35.8%)**, **Data Analysis (32.4%)**, **SQL (30.2%)**, and **Python (24.9%)**. These skills highlight the industry’s emphasis on data-driven decision-making and coding expertise as fundamental requirements.\n",
+        "\n",
+        "When compared to our team’s current skill set, it is evident that we should prioritize developing knowledge in Data Science and SQL, which are highly demanded by the industry. Furthermore, while our team assessment did not initially account for **Communication**, the plot shows it as the most sought-after skill in IT job postings. This serves as a crucial reminder of the importance of teamwork, collaboration, and effective interpersonal interactions in IT careers. Technical expertise alone is insufficient; the ability to articulate ideas and communicate solutions is critical.\n",
+        "\n",
+        "**The data also reveals that employers value a combination of technical proficiency, soft skills, and operational knowledge. To address skill gaps within our team, we can adopt a collaborative approach:**\n",
+        "\n",
+        "1. Knowledge-sharing and mentorship: Team members skilled in communication can guide others in developing interpersonal abilities, while those with expertise in Python or SQL can lead technical workshops.  \n",
+        "2. Specialization by strengths: Individuals strong in communication can take on tasks such as presentations and stakeholder engagement, whereas those skilled in technology can focus on back-end technical work.\n",
+        "\n",
+        "This strategy not only bridges skill gaps but also optimizes team collaboration, positioning us as more competitive in the IT job market.\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "# Machine Learning Methods\n",
+        "\n",
+        "---"
+      ],
+      "id": "7d3fb2ef"
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "title: Machine Learning Methods\n",
+        "subtitle: Clustering and Machine Learning Techniques for Job Market Trends Analysis\n",
+        "author:\n",
+        "  - name: Furong Wang\n",
+        "    affiliations:\n",
+        "      - ref: bu\n",
+        "  - name: Marco Perez Garcia\n",
+        "    affiliations:\n",
+        "      - ref: bu\n",
+        "affiliations:\n",
+        "  - id: bu\n",
+        "    name: Boston University\n",
+        "    city: Boston\n",
+        "    state: MA\n",
+        "bibliography: references.bib\n",
+        "csl: csl/econometrica.csl\n",
+        "format:\n",
+        "  html:\n",
+        "    toc: true\n",
+        "    number-sections: true\n",
+        "    df-print: paged\n",
+        "jupyter: python3\n",
+        "---"
+      ],
+      "id": "c392fd70"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import pandas as pd\n",
+        "import numpy as np\n",
+        "import matplotlib.pyplot as plt\n",
+        "import seaborn as sns\n",
+        "import plotly.express as px\n",
+        "from pyspark.sql import SparkSession\n",
+        "import plotly.io as pio\n",
+        "from pyspark.ml.feature import StringIndexer, OneHotEncoder, VectorAssembler, StandardScaler\n",
+        "from pyspark.ml import Pipeline\n",
+        "from tabulate import tabulate\n",
+        "from IPython.display import HTML\n",
+        "from pyspark.sql import Window\n",
+        "from pyspark.sql import functions as F\n",
+        "from pyspark.sql.functions import col, pow, sqrt, abs, mean, avg, sum as spark_sum, round as spark_round, row_number\n",
+        "from pyspark.sql.types import DoubleType\n",
+        "from pyspark.ml.regression import RandomForestRegressor\n",
+        "from pyspark.ml.evaluation import RegressionEvaluator\n",
+        "from pyspark.ml.clustering import KMeans\n",
+        "from pyspark.ml.evaluation import ClusteringEvaluator\n",
+        "import plotly.graph_objects as go"
+      ],
+      "id": "f0b141e1",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plotly_layout = dict(\n",
+        "    font=dict(family=\"Arial\", size=14),\n",
+        "    title_font=dict(size=20, family=\"Arial\", color=\"black\"),\n",
+        "    paper_bgcolor=\"white\",\n",
+        "    plot_bgcolor=\"white\",\n",
+        "    margin=dict(t=60, l=60, r=30, b=60),\n",
+        "    legend=dict(bordercolor=\"lightgray\", borderwidth=1),\n",
+        "    xaxis=dict(\n",
+        "        title_font=dict(size=16, color=\"black\"),  \n",
+        "        tickfont=dict(size=12, color=\"black\"),    \n",
+        "        showgrid=True, \n",
+        "        gridcolor=\"lightgray\",\n",
+        "        showline=True,\n",
+        "        linecolor=\"black\",\n",
+        "        linewidth=1,\n",
+        "        mirror=True,\n",
+        "        zeroline=True,\n",
+        "        zerolinecolor=\"gray\",\n",
+        "        zerolinewidth=1\n",
+        "    ),\n",
+        "    yaxis=dict(\n",
+        "        title_font=dict(size=16, color=\"black\"),  \n",
+        "        tickfont=dict(size=12, color=\"black\"),    \n",
+        "        showgrid=True, \n",
+        "        gridcolor=\"lightgray\",\n",
+        "        showline=True,\n",
+        "        linecolor=\"black\",\n",
+        "        linewidth=1,\n",
+        "        mirror=True,\n",
+        "        zeroline=True,\n",
+        "        zerolinecolor=\"gray\",\n",
+        "        zerolinewidth=1\n",
+        "    ),\n",
+        ")"
+      ],
+      "id": "2cd2af54",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# **Unsupervised Learning: KMeans Clustering**\n",
+        "\n",
+        "In this section, we used KMeans clustering to group job postings based on `Minimum Years of Experience` and `Salary`. Our goal was to find natural patterns in how job roles are distributed across different experience and salary ranges. After clustering, we used `NAICS6_NAME` industry classifications to interpret the types of industries represented in each cluster.\n",
+        "\n",
+        "By doing so, we can better understand how different industries vary in their experience requirements and compensation levels, providing insights into salary structures across the job market."
+      ],
+      "id": "23dfd1cb"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "spark = SparkSession.builder.appName(\"LightcastData\").getOrCreate()\n",
+        "\n",
+        "# Load Data\n",
+        "df = spark.read.option(\"header\", \"true\").option(\"inferSchema\", \"true\").option(\"multiLine\",\"true\").option(\"escape\", \"\\\"\").csv(\"lightcast_job_postings.csv\")\n",
+        "\n",
+        "# Show Schema and Sample Data\n",
+        "# df.printSchema() \n",
+        "# df.show(5)\n",
+        "\n",
+        "# Register the DataFrame as a temporary SQL table\n",
+        "df.createOrReplaceTempView(\"job_postings\")"
+      ],
+      "id": "b176f658",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "df = df.dropna(subset=['MIN_YEARS_EXPERIENCE', 'SALARY', 'NAICS6_NAME'])\n",
+        "df = df.filter(df.NAICS6_NAME != 'Unclassified Industry')\n",
+        "\n",
+        "df_casted = df.select(\n",
+        "    col(\"MIN_YEARS_EXPERIENCE\").cast(DoubleType()),\n",
+        "    col(\"SALARY\").cast(DoubleType()),\n",
+        "    col(\"NAICS6_NAME\")\n",
+        ")\n",
+        "\n",
+        "assembler = VectorAssembler(\n",
+        "    inputCols=[\"MIN_YEARS_EXPERIENCE\", \"SALARY\"], \n",
+        "    outputCol='features_unscaled'\n",
+        ")\n",
+        "df_features = assembler.transform(df_casted)"
+      ],
+      "id": "4cd01280",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "scaler = StandardScaler(\n",
+        "    inputCol='features_unscaled', \n",
+        "    outputCol='features', \n",
+        "    withMean=True, \n",
+        "    withStd=True\n",
+        ")\n",
+        "scaler_model = scaler.fit(df_features)\n",
+        "df_scaled = scaler_model.transform(df_features)"
+      ],
+      "id": "6467fe56",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "scores = []\n",
+        "ks = list(range(2, 9))\n",
+        "\n",
+        "for k in ks:\n",
+        "    kmeans = KMeans().setK(k).setSeed(42).setFeaturesCol(\"features\")\n",
+        "    model = kmeans.fit(df_scaled)\n",
+        "    transformed = model.transform(df_scaled)\n",
+        "\n",
+        "    evaluator = ClusteringEvaluator(\n",
+        "        featuresCol=\"features\", predictionCol=\"prediction\", metricName=\"silhouette\")\n",
+        "    score = evaluator.evaluate(transformed)\n",
+        "    scores.append(score)\n",
+        "\n",
+        "fig = go.Figure()\n",
+        "fig.add_trace(go.Scatter(x=ks, y=scores, mode='lines+markers', name='Silhouette Score'))\n",
+        "fig.update_layout(title=\"Silhouette Score vs. k\", \n",
+        "                  xaxis_title=\"k\",\n",
+        "                  yaxis_title=\"Score\",\n",
+        "                  template=\"simple_white\",\n",
+        "                  width=900)\n",
+        "fig.update_layout(**plotly_layout) \n",
+        "fig.show()"
+      ],
+      "id": "777a6c52",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "kmeans_final = KMeans(featuresCol='features', k=4, seed=688)\n",
+        "model_final = kmeans_final.fit(df_scaled)\n",
+        "\n",
+        "predictions = model_final.transform(df_scaled)"
+      ],
+      "id": "d43ddcf4",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "industry_counts = predictions.groupBy('prediction', 'NAICS6_NAME').count()\n",
+        "\n",
+        "window_spec = Window.partitionBy('prediction')\n",
+        "industry_counts = industry_counts.withColumn('total', spark_sum('count').over(window_spec))\n",
+        "\n",
+        "industry_counts = industry_counts.withColumn('percentage', spark_round(col('count') / col('total') * 100, 2))\n",
+        "\n",
+        "window_top5 = Window.partitionBy('prediction').orderBy(col('percentage').desc())\n",
+        "industry_top5 = industry_counts.withColumn('row_num', row_number().over(window_top5)).filter(col('row_num') <= 5)\n",
+        "\n",
+        "industry_top5.orderBy('prediction', 'row_num').show(100, truncate=False)"
+      ],
+      "id": "02c4df52",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "pandas_df = predictions.select('MIN_YEARS_EXPERIENCE', 'SALARY', 'prediction').toPandas()\n",
+        "\n",
+        "pandas_df['Cluster_Name'] = pandas_df['prediction'].map({0: 'Cluster 1', \n",
+        "                                                         1: 'Cluster 2', \n",
+        "                                                         2: 'Cluster 3',\n",
+        "                                                         3: 'Cluster 4'})\n",
+        "\n",
+        "plt.figure(figsize=(8, 5))\n",
+        "fig = px.scatter(\n",
+        "    pandas_df, \n",
+        "    x=\"MIN_YEARS_EXPERIENCE\", \n",
+        "    y=\"SALARY\", \n",
+        "    color=\"Cluster_Name\", \n",
+        "    title=\"K-Means Clustering on Job Postings Data\", \n",
+        "    labels={\n",
+        "        \"MIN_YEARS_EXPERIENCE\": \"Minimum Years of Experience\", \n",
+        "        \"SALARY\": \"Salary\",\n",
+        "        \"Cluster_Name\": \"Cluster\"\n",
+        "    },\n",
+        "    category_orders={\"Cluster_Name\": [\"Cluster 1\", \"Cluster 2\", \"Cluster 3\", \"Cluster 4\"]}\n",
+        ")\n",
+        "\n",
+        "fig.update_layout(**plotly_layout,\n",
+        "                  width=800,\n",
+        "                  height=500) \n",
+        "fig.show()"
+      ],
+      "id": "08c8c2e3",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Based on the silhouette score of the K value and practical anlysis requirements, we identified four distinct clusters that capture major compensation patterns in the labor market.\n",
+        "\n",
+        "**Here are key findings based on salary and experience trends:**\n",
+        "\n",
+        "- **Cluster 1:**  \n",
+        "    - **Experience/Salary Pattern:** Requires higher minimum years of experience. Offers only moderate salary levels despite higher experience.  \n",
+        "    - **Top Industries:** Computer Systems Design Services, Administrative Management and General Management Consulting Services, and Custom Computer Programming Services.  \n",
+        "    - **Insight:** Jobs demanding significant prior experience but offering relatively moderate compensation. Indicates competitive markets in tech and consulting sectors.  \n",
+        "- **Cluster 2:**  \n",
+        "    - **Experience/Salary Pattern:** Consistently the highest salaries across a wide range of experience levels.  \n",
+        "    - **Top Industries:** Administrative Management and General Management Consulting Services, Web Search Portals and Other Information Services, and Commercial Banking.  \n",
+        "    - **Insight:** Reflects premium-paying roles in consulting, web services, and finance. This suggests opportunities for substantial earnings even with moderate experience.  \n",
+        "- **Cluster 3:**   \n",
+        "    - **Experience/Salary Pattern:** Requires lower years of experience. Salary levels are generally the lowest.  \n",
+        "    - **Top Industries:** Administrative Management and General Management Consulting Services, Employment Placement Agencies, and Direct Health and Medical Insurance Carriers.  \n",
+        "    - **Insight:** Entry-level or early-career roles in sectors with limited immediate salary growth.  \n",
+        "- **Cluster 4:**   \n",
+        "    - **Experience/Salary Pattern:** Moderate years of experience required. Salary levels are moderately high.  \n",
+        "    - **Top Industries:** Administrative Management and General Management Consulting Services, Employment Placement Agencies, and Commercial Banking.  \n",
+        "    - **Insight:** Steady career tracks offering good compensation for mid-experience professionals.  \n",
+        "\n",
+        "**Implications for Salary and Compensation Trends:**  \n",
+        "- Salary growth is not always linear with experience; certain clusters show salary plateaus despite increasing experience.  \n",
+        "- Industry effects are significant: sectors like Professional Services and Finance consistently appear across clusters, but compensation levels vary depending on experience requirements.  \n",
+        "- High-paying opportunities exist both at low and high experience levels, depending on industry and role specialization.  \n",
+        "\n",
+        "**Implications for Job Seekers:**  \n",
+        "- **High Salary Aspirations:** Target roles in Cluster 2 industries like consulting, finance, and web services where premium salaries are achievable even with moderate experience.  \n",
+        "\n",
+        "- **Career Launch:** Cluster 3 industries may provide easier entry points for new graduates but with lower starting salaries. In contrast, positions in Cluster 4 offer a good balance between experience investment and salary rewards.  \n",
+        "\n",
+        "- **Beware of High-Experience/Moderate-Pay Sectors:** Cluster 1 jobs may require significant experience without corresponding salary premiums, requiring careful career planning.  \n",
+        "\n",
+        "# **Supervised Learning: Random Forest Regression**\n",
+        "\n",
+        "To deepen our analysis on Salary and Compensation Trends, we constructed a Random Forest Regression model using salary as the target variable. The goal of this model is to predict salary outcomes based on key job posting attributes, and to identify the relative importance of different factors influencing compensation in the labor market.\n",
+        "\n",
+        "The predictor variables selected for the model include: `DURATION`, `MIN_YEARS_EXPERIENCE`, `LOT_V6_OCCUPATION_NAME`, `STATE_NAME`, `EMPLOYMENT_TYPE_NAME`"
+      ],
+      "id": "4c955240"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "df_rf = df.dropna(subset=['DURATION', 'MIN_YEARS_EXPERIENCE',  \n",
+        "                          'LOT_V6_OCCUPATION_NAME', 'STATE_NAME', 'EMPLOYMENT_TYPE_NAME',\n",
+        "                          'SALARY'])\n",
+        "\n",
+        "categorical_cols = ['LOT_V6_OCCUPATION_NAME', 'STATE_NAME', 'EMPLOYMENT_TYPE_NAME'] \n",
+        "continuous_cols = ['DURATION', 'MIN_YEARS_EXPERIENCE'] \n",
+        "\n",
+        "# Index and One-Hot Encode\n",
+        "indexers = [StringIndexer(inputCol=col, outputCol=f\"{col}_idx\", handleInvalid='skip') for col in categorical_cols]\n",
+        "encoders = [OneHotEncoder(inputCol=f\"{col}_idx\", outputCol=f\"{col}_vec\") for col in categorical_cols]\n",
+        "\n",
+        "# Assemble base features \n",
+        "assembler = VectorAssembler(\n",
+        "    inputCols=continuous_cols \n",
+        "    + [f\"{col}_vec\" for col in categorical_cols], \n",
+        "    outputCol=\"features\"\n",
+        ")\n",
+        "\n",
+        "# Build pipeline and transform\n",
+        "pipeline = Pipeline(stages=indexers + encoders + [assembler]) \n",
+        "data = pipeline.fit(df_rf).transform(df_rf)\n",
+        "\n",
+        "# Show final structure\n",
+        "data.select(\"SALARY\", \"features\").show(5, truncate=False)"
+      ],
+      "id": "f54a580c",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "train_data, test_data = data.randomSplit([0.8, 0.2], seed=688)\n",
+        "\n",
+        "rf = RandomForestRegressor(featuresCol=\"features\",\n",
+        "                           labelCol=\"SALARY\", \n",
+        "                           numTrees=150,\n",
+        "                           maxDepth=9, \n",
+        "                           seed=688 \n",
+        "                           )\n",
+        "\n",
+        "# Train model\n",
+        "rf_model = rf.fit(train_data.select(\"SALARY\", \"features\"))\n",
+        "\n",
+        "# Generate predictions\n",
+        "rf_preds = rf_model.transform(train_data.select(\"SALARY\", \"features\"))"
+      ],
+      "id": "4bd5f233",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Extract feature importances\n",
+        "def get_actual_feature_names(df_rf, assembler, encoded_cols):\n",
+        "    full_feature_names = []\n",
+        "\n",
+        "    for col_name in assembler.getInputCols():\n",
+        "        if col_name in encoded_cols:\n",
+        "            try:\n",
+        "                attr_meta = df_rf.schema[col_name].metadata['ml_attr']['attrs']\n",
+        "                for attr_group in attr_meta.values():\n",
+        "                    for attr in attr_group:\n",
+        "                        full_feature_names.append(attr['name'])\n",
+        "            except:\n",
+        "                full_feature_names.append(col_name)\n",
+        "        else:\n",
+        "            full_feature_names.append(col_name)\n",
+        "\n",
+        "    return full_feature_names\n",
+        "\n",
+        "encoded_cols = [f\"{col}_vec\" for col in categorical_cols] \n",
+        "feature_names = get_actual_feature_names(data, assembler, encoded_cols)\n",
+        "importances = rf_model.featureImportances.toArray() "
+      ],
+      "id": "29212359",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "def clean_feature_names(feature_list):\n",
+        "    clean_names = []\n",
+        "    for name in feature_list:\n",
+        "        if isinstance(name, list):\n",
+        "            clean_names.append(\", \".join(str(n) for n in name))\n",
+        "        elif isinstance(name, str) and name.startswith(\"[\"):\n",
+        "            clean_names.append(name.replace(\"[\", \"\").replace(\"]\", \"\").replace(\"'\", \"\").replace('\"', '').strip())\n",
+        "        else:\n",
+        "            clean_names.append(str(name))\n",
+        "    return clean_names\n",
+        "\n",
+        "# Build dataframe\n",
+        "importance_df = pd.DataFrame({\n",
+        "    \"Feature\": feature_names,\n",
+        "    \"Importance\": importances\n",
+        "}).sort_values(by=\"Importance\", ascending=False)\n",
+        "\n",
+        "importance_df[\"Feature\"] = clean_feature_names(importance_df[\"Feature\"])\n",
+        "top_importance_df = importance_df.head(15)\n",
+        "\n",
+        "# Plot\n",
+        "plt.figure(figsize=(9, 6))\n",
+        "sns.barplot(\n",
+        "    x=\"Importance\",\n",
+        "    y=\"Feature\",\n",
+        "    data=top_importance_df,\n",
+        "    hue=\"Feature\",\n",
+        "    palette=\"viridis\"\n",
+        ")\n",
+        "\n",
+        "import textwrap\n",
+        "labels = plt.gca().get_yticklabels()\n",
+        "new_labels = [textwrap.fill(label.get_text(), width=30) for label in labels]\n",
+        "plt.yticks(range(len(new_labels)), new_labels, fontsize=9)\n",
+        "plt.xticks(fontsize=10)\n",
+        "\n",
+        "plt.title(\"Top 15 Feature Importances from Random Forest Model\", fontsize=14, fontweight='bold')\n",
+        "plt.xlabel(\"Importance\", fontsize=12, fontweight='bold')\n",
+        "plt.ylabel(\"Feature\", fontsize=12, fontweight='bold')\n",
+        "plt.tight_layout()\n",
+        "plt.show()"
+      ],
+      "id": "cdfdd15e",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "evaluator_r2 = RegressionEvaluator(labelCol=\"SALARY\", predictionCol=\"prediction\", metricName=\"r2\")\n",
+        "\n",
+        "rf_preds = rf_model.transform(test_data)\n",
+        "rf_residuals = rf_preds.select(\n",
+        "    col(\"SALARY\"),\n",
+        "    col(\"prediction\"),\n",
+        "    (col(\"SALARY\") - col(\"prediction\")).alias(\"residual\")\n",
+        ")\n",
+        "\n",
+        "rf_r2   = evaluator_r2.evaluate(rf_preds) \n",
+        "rf_rmse = np.sqrt(rf_residuals.select(avg(pow(col(\"residual\"), 2))).first()[0]) \n",
+        "rf_aic  = None\n",
+        "rf_bic  = None\n",
+        "\n",
+        "rf_pdf = rf_residuals.select(\"SALARY\", col(\"prediction\").alias(\"RandomForest\")).toPandas()\n",
+        "rf_df = pd.DataFrame({\"SALARY\": rf_pdf[\"SALARY\"], \"RandomForest\": rf_pdf[\"RandomForest\"]})"
+      ],
+      "id": "1326e8d8",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "plt.figure(figsize=(7, 17))\n",
+        "sns.set(style=\"whitegrid\")\n",
+        "\n",
+        "models = {\"RandomForest\": (rf_rmse, rf_r2, \"NA\", \"NA\")}\n",
+        "\n",
+        "model_dfs = {\"RandomForest\": rf_df}\n",
+        "\n",
+        "for idx, (model_name, (rmse, r2, aic, bic)) in enumerate(models.items(), 1):\n",
+        "    plt.subplot(3, 1, idx)\n",
+        "    \n",
+        "    model_data = model_dfs[model_name]\n",
+        "    \n",
+        "    sns.scatterplot(x=\"SALARY\", y=model_name, data=model_data, alpha=0.5, label=model_name)\n",
+        "    \n",
+        "    x_min = model_data[\"SALARY\"].min()\n",
+        "    x_max = model_data[\"SALARY\"].max()\n",
+        "    plt.plot([x_min, x_max], [x_min, x_max], 'r-', label=\"Ideal Fit\")\n",
+        "    \n",
+        "    if aic != \"NA\" and bic != \"NA\":\n",
+        "        plt.title(f\"{model_name} Prediction\\nRMSE={rmse:.1f} | R²={r2:.3f} | AIC={aic:.1f} | BIC={bic:.1f}\", fontweight=\"bold\")\n",
+        "    else:\n",
+        "        plt.title(f\"{model_name} Prediction\\nRMSE={rmse:.1f} | R²={r2:.3f} | AIC=NA | BIC=NA\", fontweight=\"bold\")\n",
+        "    \n",
+        "    plt.xlabel(\"Actual Salary\", fontweight=\"bold\")\n",
+        "    plt.ylabel(\"Predicted Salary\", fontweight=\"bold\")\n",
+        "    plt.legend()\n",
+        "\n",
+        "plt.tight_layout()\n",
+        "plt.show()"
+      ],
+      "id": "1d0bcfce",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "**Model Evaluation:**  \n",
+        "- The R-Squared of 0.454 indicates a moderate level of predictive power, suggesting that the model captures a substantial portion of salary variability but leaves room for improvement.  \n",
+        "- The scatterplot shows that most predictions are reasonably aligned with the actual salaries but tend to underpredict higher salary values (especially above $200,000), which is common due to the small number of very high salaries (\"long tail\" effect).  \n",
+        "\n",
+        "**Feature Importance Analysis:**  \n",
+        "- The top 15 feature importances from random forest model show how different factors contribute to salary predictions. In our model, years of experience are by far the strongest predictor of salary. Having some certain occupation titles can also greatly affect salary expectations. Interestingly, the job posting duration is also an important factor in salary prediction, which may be related to stable roles.  \n",
+        "- On the other hand, geographic location and job type have less impact on salary predictions, with states like Oregon and California showing specific salary patterns.  \n",
+        "\n",
+        "**Implications for Job Seekers:**  \n",
+        "- **Experience Pays Off:** The model shows that minimum years of experience is the dominant factor influencing salary. For job seekers, gaining and accurately showcasing professional experience is crucial to achieving higher salary outcomes. Moreover, investing in data-related skills can be a smart career move.  \n",
+        "- **Occupation Choice Matters:** Specific technical roles (especially Computer Systems Engineers, Data Analysts, and Business Intelligence Analysts) are associated with higher salaries. Choosing high-demand, specialized roles can significantly improve salary prospects.  \n",
+        "- **Location Strategy:** While experience and occupation dominate, geography still plays a role, for example, states like Oregon, California, and New York affect salary expectations. Job seekers willing to relocate or negotiate for remote work with companies based in higher-paying states may gain salary advantages.\n"
+      ],
+      "id": "9d270e9e"
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3 (ipykernel)",
+      "path": "/usr/share/jupyter/kernels/python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
