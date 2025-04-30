@@ -22,8 +22,8 @@ bibliography: references.bib
 ---
 
 
-# Home $
-{{< include about.qmd >}}
+# Home 
+{{< include index.qmd >}}
 
 # Introduction
 {{< include introduction.qmd >}}
