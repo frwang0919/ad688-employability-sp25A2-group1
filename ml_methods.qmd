@@ -4,13 +4,15 @@ subtitle: Clustering and Machine Learning Techniques for Job Market Trends Analy
 author:
   - name: Furong Wang
     affiliations:
-      - id: bu
-        name: Boston University
-        city: Boston
-        state: MA
+      - ref: bu
   - name: Marco Perez Garcia
     affiliations:
       - ref: bu
+affiliations:
+  - id: bu
+    name: Boston University
+    city: Boston
+    state: MA
 bibliography: references.bib
 csl: csl/econometrica.csl
 format:
