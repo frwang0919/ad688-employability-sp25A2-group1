@@ -208,35 +208,34 @@ Based on the silhouette score of the K value and practical anlysis requirements,
 
 **Here are key findings based on salary and experience trends:**
 
-- **Cluster 1:** 
-    - **Experience/Salary Pattern:** Requires higher minimum years of experience. Offers only moderate salary levels despite higher experience.
-    - **Top Industries:** Computer Systems Design Services, Administrative Management and General Management Consulting Services, and Custom Computer Programming Services.
-    - **Insight:** Jobs demanding significant prior experience but offering relatively moderate compensation. Indicates competitive markets in tech and consulting sectors.
-- **Cluster 2:** 
-    - **Experience/Salary Pattern:** Consistently the highest salaries across a wide range of experience levels.
-    - **Top Industries:** Administrative Management and General Management Consulting Services, Web Search Portals and Other Information Services, and Commercial Banking.
-    - **Insight:** Reflects premium-paying roles in consulting, web services, and finance. This suggests opportunities for substantial earnings even with moderate experience.
-- **Cluster 3:** 
-    - **Experience/Salary Pattern:** Requires lower years of experience. Salary levels are generally the lowest.
-    - **Top Industries:** Administrative Management and General Management Consulting Services, Employment Placement Agencies, and Direct Health and Medical Insurance Carriers.
-    - **Insight:** Entry-level or early-career roles in sectors with limited immediate salary growth.
-- **Cluster 4:** 
-    - **Experience/Salary Pattern:** Moderate years of experience required. Salary levels are moderately high.
-    - **Top Industries:** Administrative Management and General Management Consulting Services, Employment Placement Agencies, and Commercial Banking.
-    - **Insight:** Steady career tracks offering good compensation for mid-experience professionals.
+- **Cluster 1:**  
+    - **Experience/Salary Pattern:** Requires higher minimum years of experience. Offers only moderate salary levels despite higher experience.  
+    - **Top Industries:** Computer Systems Design Services, Administrative Management and General Management Consulting Services, and Custom Computer Programming Services.  
+    - **Insight:** Jobs demanding significant prior experience but offering relatively moderate compensation. Indicates competitive markets in tech and consulting sectors.  
+- **Cluster 2:**  
+    - **Experience/Salary Pattern:** Consistently the highest salaries across a wide range of experience levels.  
+    - **Top Industries:** Administrative Management and General Management Consulting Services, Web Search Portals and Other Information Services, and Commercial Banking.  
+    - **Insight:** Reflects premium-paying roles in consulting, web services, and finance. This suggests opportunities for substantial earnings even with moderate experience.  
+- **Cluster 3:**   
+    - **Experience/Salary Pattern:** Requires lower years of experience. Salary levels are generally the lowest.  
+    - **Top Industries:** Administrative Management and General Management Consulting Services, Employment Placement Agencies, and Direct Health and Medical Insurance Carriers.  
+    - **Insight:** Entry-level or early-career roles in sectors with limited immediate salary growth.  
+- **Cluster 4:**   
+    - **Experience/Salary Pattern:** Moderate years of experience required. Salary levels are moderately high.  
+    - **Top Industries:** Administrative Management and General Management Consulting Services, Employment Placement Agencies, and Commercial Banking.  
+    - **Insight:** Steady career tracks offering good compensation for mid-experience professionals.  
 
-**Implications for Salary and Compensation Trends:**
-- Salary growth is not always linear with experience; certain clusters show salary plateaus despite increasing experience.
-- Industry effects are significant: sectors like Professional Services and Finance consistently appear across clusters, but compensation levels vary depending on experience requirements.
-- High-paying opportunities exist both at low and high experience levels, depending on industry and role specialization.
+**Implications for Salary and Compensation Trends:**  
+- Salary growth is not always linear with experience; certain clusters show salary plateaus despite increasing experience.  
+- Industry effects are significant: sectors like Professional Services and Finance consistently appear across clusters, but compensation levels vary depending on experience requirements.  
+- High-paying opportunities exist both at low and high experience levels, depending on industry and role specialization.  
 
+**Implications for Job Seekers:**  
+- **High Salary Aspirations:** Target roles in Cluster 2 industries like consulting, finance, and web services where premium salaries are achievable even with moderate experience.  
 
-**Implications for Job Seekers:**
-- **High Salary Aspirations:** Target roles in Cluster 2 industries like consulting, finance, and web services where premium salaries are achievable even with moderate experience.
+- **Career Launch:** Cluster 3 industries may provide easier entry points for new graduates but with lower starting salaries. In contrast, positions in Cluster 4 offer a good balance between experience investment and salary rewards.  
 
-- **Career Launch:** Cluster 3 industries may provide easier entry points for new graduates but with lower starting salaries. In contrast, positions in Cluster 4 offer a good balance between experience investment and salary rewards.
-
-- **Beware of High-Experience/Moderate-Pay Sectors:** Cluster 1 jobs may require significant experience without corresponding salary premiums, requiring careful career planning.
+- **Beware of High-Experience/Moderate-Pay Sectors:** Cluster 1 jobs may require significant experience without corresponding salary premiums, requiring careful career planning.  
 
 # **Supervised Learning: Random Forest Regression**
 
@@ -407,16 +406,16 @@ plt.tight_layout()
 plt.show()
 ```
 
-**Model Evaluation:**
-- The R-Squared of 0.454 indicates a moderate level of predictive power, suggesting that the model captures a substantial portion of salary variability but leaves room for improvement. 
-- The scatterplot shows that most predictions are reasonably aligned with the actual salaries but tend to underpredict higher salary values (especially above $200,000), which is common due to the small number of very high salaries ("long tail" effect).
+**Model Evaluation:**  
+- The R-Squared of 0.454 indicates a moderate level of predictive power, suggesting that the model captures a substantial portion of salary variability but leaves room for improvement.  
+- The scatterplot shows that most predictions are reasonably aligned with the actual salaries but tend to underpredict higher salary values (especially above $200,000), which is common due to the small number of very high salaries ("long tail" effect).  
 
-**Feature Importance Analysis:**
-- The top 15 feature importances from random forest model show how different factors contribute to salary predictions. In our model, years of experience are by far the strongest predictor of salary. Having some certain occupation titles can also greatly affect salary expectations. Interestingly, the job posting duration is also an important factor in salary prediction, which may be related to stable roles. 
-- On the other hand, geographic location and job type have less impact on salary predictions, with states like Oregon and California showing specific salary patterns.
+**Feature Importance Analysis:**  
+- The top 15 feature importances from random forest model show how different factors contribute to salary predictions. In our model, years of experience are by far the strongest predictor of salary. Having some certain occupation titles can also greatly affect salary expectations. Interestingly, the job posting duration is also an important factor in salary prediction, which may be related to stable roles.  
+- On the other hand, geographic location and job type have less impact on salary predictions, with states like Oregon and California showing specific salary patterns.  
 
-**Implications for Job Seekers:**
-- **Experience Pays Off:** The model shows that minimum years of experience is the dominant factor influencing salary. For job seekers, gaining and accurately showcasing professional experience is crucial to achieving higher salary outcomes. Moreover, investing in data-related skills can be a smart career move.
-- **Occupation Choice Matters:** Specific technical roles (especially Computer Systems Engineers, Data Analysts, and Business Intelligence Analysts) are associated with higher salaries. Choosing high-demand, specialized roles can significantly improve salary prospects.
+**Implications for Job Seekers:**  
+- **Experience Pays Off:** The model shows that minimum years of experience is the dominant factor influencing salary. For job seekers, gaining and accurately showcasing professional experience is crucial to achieving higher salary outcomes. Moreover, investing in data-related skills can be a smart career move.  
+- **Occupation Choice Matters:** Specific technical roles (especially Computer Systems Engineers, Data Analysts, and Business Intelligence Analysts) are associated with higher salaries. Choosing high-demand, specialized roles can significantly improve salary prospects.  
 - **Location Strategy:** While experience and occupation dominate, geography still plays a role, for example, states like Oregon, California, and New York affect salary expectations. Job seekers willing to relocate or negotiate for remote work with companies based in higher-paying states may gain salary advantages.
 
