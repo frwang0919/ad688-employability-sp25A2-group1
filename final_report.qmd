@@ -1,0 +1,41 @@
+---
+title: "Evaluating Personal Job Market Prospects in 2024"
+subtitle: "Final Report"
+author:
+  - name: Furong Wang
+    affiliations:
+      - ref: bu
+  - name: Marco Perez
+    affiliations:
+      - ref: bu
+affiliations:
+  - id: bu
+    name: Boston University
+    city: Boston
+    state: MA
+date: today
+date-modified: today
+date-format: long
+format:
+  docx: default
+bibliography: references.bib
+---
+
+
+# Home $
+{{< include about.qmd >}}
+
+# Introduction
+{{< include introduction.qmd >}}
+
+# Data Cleaning
+{{< include data_cleaning.qmd >}}
+
+# Exploratory Data Analysis (EDA)
+{{< include eda.qmd >}}
+
+# Skill Gap Analysis
+{{< include skill_gap_analysis.qmd >}}
+
+# Machine Learning Methods
+{{< include ml_methods.qmd >}}
