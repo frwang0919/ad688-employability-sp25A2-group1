@@ -1,5 +1,12 @@
 ---
-title: "Home"
+title: "Job Market Analysis 2024"
+author: "Furong Wang, Marco Perez Garcia"
+date: today
+format: 
+  html:
+    bibliography: references.bib
+    csl: csl/econometrica.csl
+    toc: true
 ---
 
 # Topic: Salary & Compensation Trends  

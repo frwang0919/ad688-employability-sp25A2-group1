@@ -36,9 +36,10 @@ import plotly.express as px
 
 ### To simplify our job market analysis, we need to drop columns that are either unnecessary, duplicated, or outdated. 
 Specifically, we removed:  
-- **Older NAICS and SOC codes (e.g., `NAICS2`, `SOC_2`).**  
+**Older NAICS and SOC codes (e.g., `NAICS2`, `SOC_2`):**  
 The North American Industry Classification System (NAICS) and Standard Occupational Classification (SOC) systems undergo periodic updates. Retaining only `NAICS_2022_6` and `SOC_2021_4` ensures we use the most recent classification standards. Moreover, older codes are redundant and may lead to inconsistencies in trend analysis.  
-- **Tracking data and URLs (e.g., `ID`, `DUPLICATES`).**  
+
+**Tracking data and URLs (e.g., `ID`, `DUPLICATES`):**  
 These columns related to data collection timestamps, unique identifiers, or internal system references, which do not contribute to meaningful insights about the job market. Similarly, URLs are not necessary for our analysis as they do not provide any additional value or context but add unnecessary complexity to the dataset.
 
 ### Why removing multiple versions of NAICS/SOC codes?
@@ -46,9 +47,10 @@ There are some reasons for this. Firstly, keeping only the latest industry and o
 
 ### Impact on Analysis:
 By removing outdated and irrelevant columns, we achieve:  
-- More accurate job market trends, focusing on meaningful variables.  
-- Easier interpretation without clutter from redundant or technical fields.  
-- Faster analysis and visualization, improving overall efficiency.  
+
+- More accurate job market trends, focusing on meaningful variables.
+- Easier interpretation without clutter from redundant or technical fields.
+- Faster analysis and visualization, improving overall efficiency.
 
 ```{python}
 job_postings = pd.read_csv('lightcast_job_postings.csv')
